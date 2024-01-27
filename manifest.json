@@ -1,0 +1,21 @@
+{
+    "description": "Allows you to change the default tab color.",
+  
+    "manifest_version": 2,
+    "name": "tab-grouping",
+    "version": "1.0",
+    "default_locale": "en",
+  
+    "background": {
+        "scripts": ["background.js"]
+    },
+
+    "browser_action": {
+        "default_icon": "icons/beasts-32.png",
+        "default_title": "Groupify",
+        "default_popup": "popup/tab_list.html"
+    },
+  
+    "permissions": ["contextMenus", "theme", "activeTab", "tabs", "storage"]
+}
+  
