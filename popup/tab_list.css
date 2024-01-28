@@ -2,3 +2,11 @@
     font-size: larger;
     color: aqua;
 }
+
+.switch-tab{
+    cursor: pointer;
+}
+
+.switch-tab:hover{
+    background-color: grey;
+}

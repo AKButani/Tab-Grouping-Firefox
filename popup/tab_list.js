@@ -1,9 +1,7 @@
-//@ts-check
+//@ts-nocheck
 async function getandsetCategories(tabs_list) {
     // @ts-ignore
     let categories = await browser.storage.session.get();
-
-    
     
     if (!categories || Object.keys(categories).length === 0) {
         let tabs = [];
@@ -39,9 +37,13 @@ function output_tabs(category, tab_list){ //need to generalise this!
     
     for (var tab of tab_list) {
         {
-            var element = document.createElement('li');
-            element.textContent = tab.title;
-            list.appendChild(element);
+            var li = document.createElement('li');
+            //var element = document.createElement('a');
+            li.setAttribute('tab-id', tab.id);
+            li.classList.add('switch-tab');
+            li.textContent = tab.title;
+            //li.appendChild(element);
+            list.appendChild(li);
         }
     }
 }
@@ -66,3 +68,17 @@ document.addEventListener('DOMContentLoaded', find_tab_list);
 // @ts-ignore
 browser.storage.onChanged.addListener(storage_update)
 
+document.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('switch-tab')){ // switch tabs if clicked on
+        let id = +e.target.getAttribute('tab-id');
+        let tabs = await browser.tabs.query({});
+        for (var tab of tabs){
+            if (tab.id == id){
+                await browser.tabs.update(tab.id, {
+                    active: true,
+                });
+                return;
+            }
+        }
+    }
+});
