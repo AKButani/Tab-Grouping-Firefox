@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import {ItemTypes} from "./types"
+import {ItemTypes} from "./types";
+
 
 const GroupHeader = (props: {groupName: string, onDrop: (TabId: browser.tabs.Tab, groupName: string ) => void}) => {
     const [{canDrop, isOver}, drop] = useDrop(() => ({
@@ -25,7 +26,7 @@ const DraggableTabEntry = (props: {tab: browser.tabs.Tab}) => {
         collect: (monitor) => ({
             isDragging: !!monitor.isDragging(),
         }),
-    }));
+    }), [props.tab]);
 
     return (
         <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1, backgroundColor: isDragging ? "grey": "white"}}>
@@ -52,9 +53,6 @@ const TabList = (props: {tabs: browser.tabs.Tab[]}) => {
 
 const TabGroupEntry = (props: {groupName: string, tabs: browser.tabs.Tab[], dropHandler: (Tab: browser.tabs.Tab, groupName: string ) => void}) => {
     console.log("in tab group entry")
-
-    
-    
 
     return (
         <>

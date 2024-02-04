@@ -24,30 +24,6 @@ const GroupList = () => {
   }, []);
 
 
-  //updates the storage when a tab entry has been dragged to a new category
-  // const dropHandler = (Tab: browser.tabs.Tab, groupName: string) => {
-
-  //   const updatedGroups = { ...groups };
-  //   console.log("Before change");
-  //   console.log(updatedGroups);
-  //   // Remove the tab from the old group
-  //   for (let group of Object.keys(updatedGroups)) {
-  //     updatedGroups[group] = updatedGroups[group].filter((tab) => tab.id !== Tab.id);
-  //   }
-
-  //   // Add tab to the new group
-  //   updatedGroups[groupName] = [...updatedGroups[groupName],Tab];
-  //   console.log("After change");
-  //   console.log(updatedGroups);
-  //   browser.storage.session.set(updatedGroups).then(
-  //     () => console.log("Set TabID: " + Tab.id + " to group " + groupName),
-  //     (error) => console.log("Error while setting TabID: " + Tab.id + " to group " + groupName, error)
-  //   );
-
-  //   setGroups(updatedGroups);
-
-  // }
-
   const dropHandler = (Tab: browser.tabs.Tab, groupName: string) => {
     // Fetch the current groups
     console.log("in drop handler");
