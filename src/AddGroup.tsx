@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 const AddGroup = (props: {onClick: (newGroup: string) => void}) => {
   let currSearch = "";
