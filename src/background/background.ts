@@ -20,6 +20,7 @@ initGroups().then(() => {
     console.log("initialised groups")
 }).catch((e) => console.log("Error " + e));
 
+//executes whenever a new tab is opened
 async function addTab(tab: browser.tabs.Tab){
     console.log("in add Tab");
     let stored = await browser.storage.session.get();
@@ -27,6 +28,7 @@ async function addTab(tab: browser.tabs.Tab){
     await browser.storage.session.set(stored);
 }
 
+//removes tab from storage whenever a tab is closed
 async function removeTab(TabId: number){
     console.log("in remove tab");
     let stored = await browser.storage.session.get();
@@ -49,6 +51,7 @@ function findGroup(storage: Record<string, browser.tabs.Tab[]>, tabId: number){
     return "";
 }
 
+//updates the entries when a tab is changed
 async function updateTab(tabId: number, changeInfo: browser.tabs._OnUpdatedChangeInfo, tab: browser.tabs.Tab){
     console.log("in update tab");
     console.log(tabId);
@@ -78,3 +81,14 @@ browser.tabs.onCreated.addListener(addTab);
 //browser.tabs.onDetached.addListener(removeTab);
 browser.tabs.onRemoved.addListener(removeTab);
 browser.tabs.onUpdated.addListener(updateTab);
+browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    if (msg.type === "open_tabs_new_win"){
+        let tabs = msg.tabIds;
+        browser.windows.create({tabId: tabs[0]}).then(newWindow => {
+            //remove 1st element since it has been moved already
+            tabs.shift();
+            // Move the tabs to the new window
+            browser.tabs.move(tabs, { windowId: newWindow.id, index: -1 });
+        });
+    }
+})
