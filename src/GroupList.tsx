@@ -4,6 +4,7 @@ import { TabGroups } from "./types";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import AddGroup from "./AddGroup";
+import { Tooltip } from "react-tooltip";
 
 const GroupList = () => {
   console.log("in grouplist")
@@ -79,6 +80,13 @@ const GroupList = () => {
         })}
       </DndProvider>
       <AddGroup onClick={addGroup} />
+      <Tooltip 
+        style={{fontSize: 15}}
+        anchorSelect=".expand-collapse-tabs"
+        content="Show/Hide Tabs"
+        place="top-start"
+        delayShow={10}
+      />
     </>
   );
 }

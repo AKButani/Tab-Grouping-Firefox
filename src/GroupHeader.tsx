@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDrop } from 'react-dnd';
 import { ItemTypes } from "./types";
 import { FaAngleRight, FaAngleDown, FaPlus } from "react-icons/fa";
+import "./GroupHeader.css"
 
 export const GroupHeader = (props: { groupName: string; isExpanded: boolean; setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>; onDrop: (TabId: browser.tabs.Tab, groupName: string) => void; tabs: browser.tabs.Tab[] }) => {
     const [{ canDrop, isOver }, drop] = useDrop(() => ({
@@ -30,13 +31,14 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
         })    
         
     }
+
     return (
         <div ref={drop} className='group-header' onClick={() => props.setIsExpanded(!props.isExpanded)} style={{ backgroundColor: (isOver && canDrop) ? 'grey' : 'red' }}>
-            {props.isExpanded ? <FaAngleDown /> : <FaAngleRight />}
+            {props.isExpanded ? <FaAngleDown className='expand-collapse-tabs'/> : <FaAngleRight className='expand-collapse-tabs'/>}
             <h1>
                 {props.groupName}
             </h1>
-            <FaPlus onClick={openTabsnewWindow}/>
+            <FaPlus onClick={openTabsnewWindow} />
         </div>
     );
 };
