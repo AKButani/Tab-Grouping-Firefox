@@ -87,6 +87,13 @@ const GroupList = () => {
         place="top-start"
         delayShow={10}
       />
+      <Tooltip 
+        style={{fontSize: 15}}
+        anchorSelect=".button-open-group-new-window"
+        content="Open Tabs in New Window"
+        place="top-start"
+        delayShow={10}
+      />
     </>
   );
 }

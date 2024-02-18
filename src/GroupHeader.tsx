@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDrop } from 'react-dnd';
 import { ItemTypes } from "./types";
 import { FaAngleRight, FaAngleDown, FaPlus } from "react-icons/fa";
@@ -38,7 +38,7 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
             <h1>
                 {props.groupName}
             </h1>
-            <FaPlus onClick={openTabsnewWindow} />
+            <FaPlus className='button-open-group-new-window' onClick={openTabsnewWindow} />
         </div>
     );
 };
