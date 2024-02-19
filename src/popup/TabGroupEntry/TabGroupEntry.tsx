@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import "./TabGroupEntry.css"
-import { GroupHeader } from './GroupHeader';
-import { TabList } from './TabList';
+import { GroupHeader } from '../GroupHeader/GroupHeader';
+import { TabList } from '../TabList';
 
 
 const TabGroupEntry = (props: {groupName: string, tabs: browser.tabs.Tab[], dropHandler: (Tab: browser.tabs.Tab, groupName: string ) => void}) => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
-import { ItemTypes } from "./types";
+import { ItemTypes } from "../types";
 import { FaAngleRight, FaAngleDown, FaPlus } from "react-icons/fa";
 import "./GroupHeader.css"
 

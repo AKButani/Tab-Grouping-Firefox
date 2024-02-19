@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import TabGroupEntry from "./TabGroupEntry";
+import TabGroupEntry from "./TabGroupEntry/TabGroupEntry";
 import { TabGroups } from "./types";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
