@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
 import { ItemTypes } from "../types";
-import { FaAngleRight, FaAngleDown, FaPlus } from "react-icons/fa";
+import { FaAngleRight, FaAngleDown, FaPlus, FaBookmark } from "react-icons/fa";
 import "./GroupHeader.css"
 
 export const GroupHeader = (props: { groupName: string; isExpanded: boolean; setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>; onDrop: (TabId: browser.tabs.Tab, groupName: string) => void; tabs: browser.tabs.Tab[] }) => {
@@ -21,7 +21,7 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
         await browser.tabs.move(tabs, {windowId: window.id, index: -1});
     } */
 
-    const openTabsnewWindow = async () => {
+    const openTabsnewWindow = () => {
         let tabs = props.tabs.map((tab) => tab.id);
 
         //tells background to create new window
@@ -32,6 +32,14 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
         
     }
 
+    const storeBookmark = () => {
+        browser.runtime.sendMessage({
+            type: "store-as-bookmark",
+            title: props.groupName,
+            tabs: props.tabs,
+        });
+    }
+
     return (
         <div ref={drop} className='group-header' onClick={() => props.setIsExpanded(!props.isExpanded)} style={{ backgroundColor: (isOver && canDrop) ? 'grey' : 'red' }}>
             {props.isExpanded ? <FaAngleDown className='expand-collapse-tabs'/> : <FaAngleRight className='expand-collapse-tabs'/>}
@@ -39,6 +47,7 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
                 {props.groupName}
             </h1>
             <FaPlus className='button-open-group-new-window' onClick={openTabsnewWindow} />
+            <FaBookmark className='bookmark-group' onClick={storeBookmark}/>
         </div>
     );
 };

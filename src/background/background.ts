@@ -90,5 +90,19 @@ browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
             // Move the tabs to the new window
             browser.tabs.move(tabs, { windowId: newWindow.id, index: -1 });
         });
+    } else if (msg.type === "store-as-bookmark"){
+        browser.bookmarks.create({title: msg.title, type: "folder"}).then((bookmark) => {
+            console.log("Bookmark created");
+            console.log(bookmark);
+
+            for (let tab of msg.tabs){
+                browser.bookmarks.create({parentId: bookmark.id, title: tab.title, url: tab.url}).then(() =>
+                   {console.log("added bookmark of " + tab.title + "to folder");}
+                );
+            }
+
+        });
+
+        
     }
 })
