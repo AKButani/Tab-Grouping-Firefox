@@ -35,7 +35,7 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
     return (
         <div ref={drop} className='group-header' onClick={() => props.setIsExpanded(!props.isExpanded)} style={{ backgroundColor: (isOver && canDrop) ? 'grey' : 'red' }}>
             {props.isExpanded ? <FaAngleDown className='expand-collapse-tabs'/> : <FaAngleRight className='expand-collapse-tabs'/>}
-            <h1>
+            <h1 className='group-header-category'>
                 {props.groupName}
             </h1>
             <FaPlus className='button-open-group-new-window' onClick={openTabsnewWindow} />

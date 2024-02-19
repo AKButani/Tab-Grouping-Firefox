@@ -11,3 +11,33 @@
     border-radius: '5px';
     z-index: 9999;
 }
+
+.group-header{
+    display: grid;
+    grid-template-columns: 10% 80% 10%;
+   /*  grid-column-gap: 5px; */
+    justify-items: stretch;
+    
+}
+
+.expand-collapse-tabs{
+    grid-column: 1 / 2;
+}
+.expand-collapse-tabs:hover{
+    background-color: grey;
+}
+
+.group-header-category{
+    text-align: start;
+    grid-column: 2 / 3;
+    
+}
+
+.button-open-group-new-window{
+    grid-column: 3 / 4;
+    
+}
+
+.button-open-group-new-window:hover{
+    background-color: grey;
+}
