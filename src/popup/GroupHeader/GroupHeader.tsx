@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDrop } from 'react-dnd';
 import { ItemTypes } from "../types";
 import { FaAngleRight, FaAngleDown, FaPlus, FaBookmark } from "react-icons/fa";
 import "./GroupHeader.css"
+import { Alert } from 'react-bootstrap';
 
 export const GroupHeader = (props: { groupName: string; isExpanded: boolean; setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>; onDrop: (TabId: browser.tabs.Tab, groupName: string) => void; tabs: browser.tabs.Tab[] }) => {
     const [{ canDrop, isOver }, drop] = useDrop(() => ({
@@ -13,6 +14,8 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
             canDrop: monitor.canDrop()
         })
     }));
+
+    const [showAlert, setAlert] = useState(false);
 
     /* const onOpenSuccess = async (window: browser.windows.Window, tabs: number[]) => {
         //now open other tabs in this window
@@ -32,22 +35,44 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
         
     }
 
-    const storeBookmark = () => {
-        browser.runtime.sendMessage({
+    const storeBookmark = async () => {
+        /* console.log(props.groupName);
+        console.log(props.tabs);
+        let sending = browser.runtime.sendMessage({
             type: "store-as-bookmark",
             title: props.groupName,
             tabs: props.tabs,
         });
+        sending.then((response) => {
+            if (response.response === "success"){
+                console.log("received success");
+                setAlert(true);
+            }
+        }, (e) => {console.error(e)}) */
+        try {
+            await browser.runtime.sendMessage({
+                type: "store-as-bookmark",
+                title: props.groupName,
+                tabs: props.tabs,
+            });
+            setAlert(true);
+        } catch (error) {
+            console.error(error);
+        }
+        
     }
 
     return (
-        <div ref={drop} className='group-header' onClick={() => props.setIsExpanded(!props.isExpanded)} style={{ backgroundColor: (isOver && canDrop) ? 'grey' : 'red' }}>
-            {props.isExpanded ? <FaAngleDown className='expand-collapse-tabs'/> : <FaAngleRight className='expand-collapse-tabs'/>}
-            <h1 className='group-header-category'>
-                {props.groupName}
-            </h1>
-            <FaPlus className='button-open-group-new-window' onClick={openTabsnewWindow} />
-            <FaBookmark className='bookmark-group' onClick={storeBookmark}/>
-        </div>
+        <>  
+            {showAlert && <Alert dismissible variant='success' onClose={() => setAlert(false)}> Success </Alert>}
+            <div ref={drop} className='group-header' style={{ backgroundColor: (isOver && canDrop) ? 'grey' : 'red' }}>
+                {props.isExpanded ? <FaAngleDown onClick={() => props.setIsExpanded(!props.isExpanded)} className='expand-collapse-tabs'/> : <FaAngleRight onClick={() => props.setIsExpanded(!props.isExpanded)} className='expand-collapse-tabs'/>}
+                <h1 className='group-header-category'>
+                    {props.groupName}
+                </h1>
+                <FaPlus className='button-open-group-new-window' onClick={openTabsnewWindow} />
+                <FaBookmark className='bookmark-group' onClick={storeBookmark}/>
+            </div>
+        </>
     );
 };

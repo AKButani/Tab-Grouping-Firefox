@@ -53,8 +53,8 @@ function findGroup(storage: Record<string, browser.tabs.Tab[]>, tabId: number){
 
 //updates the entries when a tab is changed
 async function updateTab(tabId: number, changeInfo: browser.tabs._OnUpdatedChangeInfo, tab: browser.tabs.Tab){
-    console.log("in update tab");
-    console.log(tabId);
+    /* console.log("in update tab");
+    console.log(tabId); */
     if (tab.status === "complete" && (changeInfo.url || changeInfo.title)){
         let stored = await browser.storage.session.get();
         
@@ -92,15 +92,25 @@ browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         });
     } else if (msg.type === "store-as-bookmark"){
         browser.bookmarks.create({title: msg.title, type: "folder"}).then((bookmark) => {
-            console.log("Bookmark created");
-            console.log(bookmark);
-
+            /* console.log("Bookmark created");
+            console.log(bookmark); */
+            let bookmarkPromises = [];
             for (let tab of msg.tabs){
-                browser.bookmarks.create({parentId: bookmark.id, title: tab.title, url: tab.url}).then(() =>
+                bookmarkPromises.push(browser.bookmarks.create({parentId: bookmark.id, title: tab.title, url: tab.url}).then(() =>
                    {console.log("added bookmark of " + tab.title + "to folder");}
-                );
-            }
+                ));
+            };
 
+            //waits until all tabs are bookmarked and only then sends a message
+            Promise.all(bookmarkPromises).then(() => {
+                console.log("sending response");
+                sendResponse({ response: "success" });
+            }).catch(error => {
+                console.error("Error creating bookmarks:", error);
+                sendResponse({ response: "error" });
+            });
+        }, (e) => {
+            sendResponse({response: "error" + e});
         });
 
         
