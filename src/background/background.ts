@@ -1,6 +1,17 @@
 
 export {}
 
+browser.runtime.onStartup.addListener(init);
+browser.runtime.onInstalled.addListener(init);
+function init(){
+    console.log("background running")
+    initGroups().then(() => {
+        console.log("initialised groups")
+    }).catch((e) => console.log("Error " + e));
+
+    createContextMenus();
+}
+
 async function initGroups(){
     let stored = await browser.storage.session.get();
     if (Object.keys(stored).length !== 0){
@@ -15,10 +26,68 @@ async function initGroups(){
     await browser.storage.session.set(groups);
 }
 
-console.log("background running")
-initGroups().then(() => {
-    console.log("initialised groups")
-}).catch((e) => console.log("Error " + e));
+function createContextMenus(){
+    browser.contextMenus.create({
+        id: "OPEN_BOOKMARK_SAME_WINDOW",
+        /* command: "_execute_browser_action", */
+        contexts: ["bookmark"],
+        title: "Open Bookmark in Same Window",
+    });
+
+    browser.contextMenus.create({
+        id: "OPEN_BOOKMARK_NEW_WINDOW",
+        /* command: "_execute_browser_action", */
+        contexts: ["bookmark"],
+        title: "Open Bookmark in New Window",
+    });
+}
+
+browser.contextMenus.onClicked.addListener(handleContextMenuClicks)
+
+async function handleContextMenuClicks(info: browser.contextMenus.OnClickData){
+    if (info.menuItemId === "OPEN_BOOKMARK_SAME_WINDOW"){
+        await openBookmarksameWindow(info);
+    }else if (info.menuItemId === "OPEN_BOOKMARK_NEW_WINDOW"){
+        openBookmarknewWindow(info);
+    }
+}
+
+async function openBookmarksameWindow(info: browser.contextMenus.OnClickData){
+    console.log(info);
+    let bookmarkId = info.bookmarkId;
+    if (typeof bookmarkId === "string"){
+        //bookmarks will always have length 1 since bookmarkId is a single string
+        let bookmarks = await browser.bookmarks.get(bookmarkId); 
+        console.log(bookmarks);
+        for (let bookmark of bookmarks){
+            await recursiveOpener(bookmark);
+        }
+    }
+    //now need to add these newly opened tabs to a group
+}
+
+function openBookmarknewWindow(info: browser.contextMenus.OnClickData){
+    console.log("clicked on openBookmarknewWindow")
+}
+//bookmark: folder or a url
+//opens all the urls in a bookmark 
+//including every child 
+async function recursiveOpener(bookmark: browser.bookmarks.BookmarkTreeNode){
+    if (bookmark.url){
+        await browser.tabs.create({
+            active: false,
+            url: bookmark.url,
+        });    
+    } else {
+        let children = await browser.bookmarks.getChildren(bookmark.id);
+        for (let child of children){
+            recursiveOpener(child);
+        }
+    }
+    
+    
+    
+}
 
 //executes whenever a new tab is opened
 async function addTab(tab: browser.tabs.Tab){
@@ -83,6 +152,8 @@ browser.tabs.onRemoved.addListener(removeTab);
 browser.tabs.onUpdated.addListener(updateTab);
 browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.type === "open_tabs_new_win"){
+        //Opens a group of tabs in a new window
+        
         let tabs = msg.tabIds;
         browser.windows.create({tabId: tabs[0]}).then(newWindow => {
             //remove 1st element since it has been moved already
@@ -91,6 +162,9 @@ browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
             browser.tabs.move(tabs, { windowId: newWindow.id, index: -1 });
         });
     } else if (msg.type === "store-as-bookmark"){
+        //Stores group of tabs as a bookmark
+
+
         browser.bookmarks.create({title: msg.title, type: "folder"}).then((bookmark) => {
             /* console.log("Bookmark created");
             console.log(bookmark); */
