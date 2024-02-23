@@ -47,15 +47,16 @@ browser.contextMenus.onClicked.addListener(handleContextMenuClicks)
 async function handleContextMenuClicks(info: browser.contextMenus.OnClickData){
     if (info.menuItemId === "OPEN_BOOKMARK_SAME_WINDOW"){
         await openBookmarksameWindow(info);
+
     }else if (info.menuItemId === "OPEN_BOOKMARK_NEW_WINDOW"){
-        openBookmarknewWindow(info);
+        await openBookmarknewWindow(info);
     }
 }
 
 async function openBookmarksameWindow(info: browser.contextMenus.OnClickData){
     console.log(info);
     let bookmarkId = info.bookmarkId;
-    if (typeof bookmarkId === "string"){
+    if (typeof bookmarkId === "string"){ //checking if not undefined
         //bookmarks will always have length 1 since bookmarkId is a single string
         let bookmarks = await browser.bookmarks.get(bookmarkId); 
         console.log(bookmarks);
@@ -66,8 +67,18 @@ async function openBookmarksameWindow(info: browser.contextMenus.OnClickData){
     //now need to add these newly opened tabs to a group
 }
 
-function openBookmarknewWindow(info: browser.contextMenus.OnClickData){
+async function openBookmarknewWindow(info: browser.contextMenus.OnClickData){
     console.log("clicked on openBookmarknewWindow")
+    let bookmarkId = info.bookmarkId;
+    if (typeof bookmarkId === "string"){
+        let bookmarks = await browser.bookmarks.get(bookmarkId);
+        let urls: string[] = [];
+        for (let bookmark of bookmarks){ //this only runs once
+            urls = await getAllurls(bookmark)
+        }
+        let window = await browser.windows.create({focused: true, type: "normal", url: urls})
+    }
+
 }
 //bookmark: folder or a url
 //opens all the urls in a bookmark 
@@ -84,10 +95,33 @@ async function recursiveOpener(bookmark: browser.bookmarks.BookmarkTreeNode){
             recursiveOpener(child);
         }
     }
-    
-    
-    
 }
+
+async function getAllurls(bookmark: browser.bookmarks.BookmarkTreeNode){
+    const urls: string[] = [];
+
+    // Check if the bookmark is a folder
+    let children = await browser.bookmarks.getChildren(bookmark.id);
+    if (children) {
+        // Iterate over each child
+        children.forEach(async (child) => {
+            // If the child is a URL, add it to the list of URLs
+            if (child.url) {
+                urls.push(child.url);
+            }
+            // If the child is a folder, recursively call the function to get URLs from it
+            else {
+                let child_children = await browser.bookmarks.getChildren(child.id);
+                if (child_children) {
+                    const childUrls = await getAllurls(child);
+                    urls.push(...childUrls);
+                }
+            }
+        });
+    }
+
+    return urls;
+} 
 
 //executes whenever a new tab is opened
 async function addTab(tab: browser.tabs.Tab){
