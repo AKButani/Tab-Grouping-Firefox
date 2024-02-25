@@ -60,9 +60,12 @@ async function openBookmarksameWindow(info: browser.contextMenus.OnClickData){
         //bookmarks will always have length 1 since bookmarkId is a single string
         let bookmarks = await browser.bookmarks.get(bookmarkId); 
         console.log(bookmarks);
-        for (let bookmark of bookmarks){
-            await recursiveOpener(bookmark);
-        }
+        let tabIdOpened = [] //list of id's of tabs opened
+        tabIdOpened = await recursiveOpener(bookmarks[0]);
+        let groupName = bookmarks[0].title;  
+        let storage = await browser.storage.session.get();
+        let uniqueGroupName = handleRepitition(groupName, storage)
+        await moveTabs(tabIdOpened, uniqueGroupName, storage);
     }
     //now need to add these newly opened tabs to a group
 }
@@ -114,14 +117,18 @@ async function moveTabs(tabIds: (number | undefined)[], uniqueGroupName: string,
 
 function handleRepitition(groupName: string, storage: {[key: string]: any;}){
     var res = groupName;
-    if (storage[res]){
+    console.log(storage[res]);
+    if (storage[res] === undefined){
+        console.log("returning: " + res);
         return res;
     }else{
         let count = 1;
-        while(storage[res]){ //potential inf loop??
+        while(storage[res] !== undefined){ //potential inf loop??
+            console.log("count: " + count)
             res = groupName + ` (${count})`;
-            count += 1
+            count += 1;
         }
+        console.log("returning: " + res);
         return res;
     }
     
@@ -130,18 +137,20 @@ function handleRepitition(groupName: string, storage: {[key: string]: any;}){
 //bookmark: folder or a url
 //opens all the urls in a bookmark 
 //including every child 
-async function recursiveOpener(bookmark: browser.bookmarks.BookmarkTreeNode){
+async function recursiveOpener(bookmark: browser.bookmarks.BookmarkTreeNode, tabIds: (number | undefined)[] = []){
     if (bookmark.url){
-        await browser.tabs.create({
+        const tab = await browser.tabs.create({
             active: false,
             url: bookmark.url,
-        });    
+        });
+        tabIds.push(tab.id);
     } else {
         let children = await browser.bookmarks.getChildren(bookmark.id);
         for (let child of children){
-            recursiveOpener(child);
+            await recursiveOpener(child, tabIds);
         }
     }
+    return tabIds;
 }
 
 async function getAllurls(bookmark: browser.bookmarks.BookmarkTreeNode){
