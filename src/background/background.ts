@@ -76,8 +76,55 @@ async function openBookmarknewWindow(info: browser.contextMenus.OnClickData){
         for (let bookmark of bookmarks){ //this only runs once
             urls = await getAllurls(bookmark)
         }
-        let window = await browser.windows.create({focused: true, type: "normal", url: urls})
+        let window = await browser.windows.create({focused: true, type: "normal", url: urls});
+        let tabs = window.tabs;
+        let tabIds = tabs!.map((tab) => tab.id);
+        /* console.log("tabs after creating a new window");
+        console.log(tabs);
+        if (tabs !== undefined){
+            let storage = await browser.storage.session.get();
+            let groupName = bookmarks[0].title; 
+            let uniqueGroupName = handleRepitition(groupName, storage);
+            storage[uniqueGroupName] = tabs;
+            await browser.storage.session.set(storage);
+            console.log("added bookmarked tabs to group");
+        } */  
+        let groupName = bookmarks[0].title;  
+        let storage = await browser.storage.session.get();
+        let uniqueGroupName = handleRepitition(groupName, storage)
+        await moveTabs(tabIds, uniqueGroupName, storage);
     }
+}
+
+async function moveTabs(tabIds: (number | undefined)[], uniqueGroupName: string, storage: {[key: string]: any;}){
+    storage['Unassigned'].filter((tab: browser.tabs.Tab) => tabIds.includes(tab.id));
+    let tabList = []; 
+    
+    for(let tabId of tabIds){
+        if (typeof tabId === "number"){
+            let tab = await browser.tabs.get(tabId);
+            tabList.push(tab);        
+        }
+    }
+    storage[uniqueGroupName] = tabList;
+
+    await browser.storage.session.set(storage);
+
+}
+
+function handleRepitition(groupName: string, storage: {[key: string]: any;}){
+    var res = groupName;
+    if (storage[res]){
+        return res;
+    }else{
+        let count = 1;
+        while(storage[res]){ //potential inf loop??
+            res = groupName + ` (${count})`;
+            count += 1
+        }
+        return res;
+    }
+    
 
 }
 //bookmark: folder or a url
@@ -154,7 +201,7 @@ function findGroup(storage: Record<string, browser.tabs.Tab[]>, tabId: number){
     return "";
 }
 
-//updates the entries when a tab is changed
+//updates the entries, namely title and url, when a tab is changed
 async function updateTab(tabId: number, changeInfo: browser.tabs._OnUpdatedChangeInfo, tab: browser.tabs.Tab){
     /* console.log("in update tab");
     console.log(tabId); */
@@ -163,17 +210,18 @@ async function updateTab(tabId: number, changeInfo: browser.tabs._OnUpdatedChang
         
         console.log("in updateTab");
         console.log(changeInfo);
+        console.log(stored);
         
         let group = findGroup(stored, tabId);
         
-        console.log("group: " + group);
-        
-        console.log(stored[group]);
+        /* console.log("group: " + group);
+        console.log(stored[group]); */
         
         stored[group] = stored[group].filter((tab: browser.tabs.Tab) => tab.id !== tabId);
 
-        console.log("after filter");
-        console.log(stored[group]);
+       /*  console.log("after filter");
+        console.log(stored[group]); */
+
         stored[group].push(tab);
         await browser.storage.session.set(stored);
     }
