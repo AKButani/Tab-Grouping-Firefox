@@ -29,25 +29,24 @@ function findGroup(storage: Record<string, browser.tabs.Tab[]>, tabId: number) {
 }
 //updates the entries, namely title and url, when a tab is changed
 export async function updateTab(tabId: number, changeInfo: browser.tabs._OnUpdatedChangeInfo, tab: browser.tabs.Tab) {
-    /* console.log("in update tab");
-    console.log(tabId); */
-    if (tab.status === "complete" && (changeInfo.url || changeInfo.title)) {
-        let stored = await browser.storage.session.get();
+    console.log("in update tab");
+    console.log(changeInfo);
+    /* console.log(tabId); */
+    let stored = await browser.storage.session.get();
 
-        console.log("in updateTab");
-        console.log(changeInfo);
-        console.log(stored);
+    console.log("in updateTab");
+    /* console.log(changeInfo);
+       console.log(stored); */
 
-        let group = findGroup(stored, tabId);
+    let group = findGroup(stored, tabId);
 
-        /* console.log("group: " + group);
-        console.log(stored[group]); */
-        stored[group] = stored[group].filter((tab: browser.tabs.Tab) => tab.id !== tabId);
+    /* console.log("group: " + group);
+    console.log(stored[group]); */
+    stored[group] = stored[group].filter((tab: browser.tabs.Tab) => tab.id !== tabId);
 
-        /*  console.log("after filter");
-         console.log(stored[group]); */
-        stored[group].push(tab);
-        await browser.storage.session.set(stored);
-    }
+    /*  console.log("after filter");
+     console.log(stored[group]); */
+    stored[group].push(tab);
+    await browser.storage.session.set(stored);
 
 }

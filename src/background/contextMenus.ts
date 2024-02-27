@@ -1,3 +1,4 @@
+import { addTab } from "./tabEvents";
 
 //Creates the right-click options
 export function createContextMenus() {
@@ -18,63 +19,65 @@ export function createContextMenus() {
 
 export async function handleContextMenuClicks(info: browser.contextMenus.OnClickData) {
     if (info.menuItemId === "OPEN_BOOKMARK_SAME_WINDOW") {
-        await openBookmarksameWindow(info);
+        await openBookmarks(info, true);
 
     } else if (info.menuItemId === "OPEN_BOOKMARK_NEW_WINDOW") {
-        await openBookmarknewWindow(info);
+        await openBookmarks(info, false);
     }
 }
 
-async function openBookmarksameWindow(info: browser.contextMenus.OnClickData) {
-    console.log(info);
-    let bookmarkId = info.bookmarkId;
-    if (typeof bookmarkId === "string") { //checking if not undefined
+async function openBookmarks(info: browser.contextMenus.OnClickData, sameWindow: boolean) {
+    var bookmarkId = info.bookmarkId;
+    if (typeof bookmarkId === "string"){//checking if not undefined
+        var bookmarks = await browser.bookmarks.get(bookmarkId);
         //bookmarks will always have length 1 since bookmarkId is a single string
-        let bookmarks = await browser.bookmarks.get(bookmarkId);
-        console.log(bookmarks);
-        let tabIdOpened = []; //list of id's of tabs opened
-        tabIdOpened = await recursiveOpener(bookmarks[0]);
-        let groupName = bookmarks[0].title;
-        let storage = await browser.storage.session.get();
-        let uniqueGroupName = handleRepitition(groupName, storage);
-        console.log("Tabs Opened: ")
-        console.log(tabIdOpened);
-        await moveTabs(tabIdOpened, uniqueGroupName, storage);
-    }
-    //now need to add these newly opened tabs to a group
-}
+        if (sameWindow) {
+            console.log(info);
+            console.log(bookmarks);
+            let tabIdOpened = []; //list of id's of tabs opened
+            if (browser.tabs.onCreated.hasListener(addTab)) {
+                browser.tabs.onCreated.removeListener(addTab);
+                tabIdOpened = await recursiveOpener(bookmarks[0]);
+                let groupName = bookmarks[0].title;
+                let storage = await browser.storage.session.get();
+                let uniqueGroupName = handleRepitition(groupName, storage);
+                console.log("Tabs Opened: ")
+                console.log(tabIdOpened);
 
-async function openBookmarknewWindow(info: browser.contextMenus.OnClickData) {
-    console.log("clicked on openBookmarknewWindow");
-    let bookmarkId = info.bookmarkId;
-    if (typeof bookmarkId === "string") {
-        let bookmarks = await browser.bookmarks.get(bookmarkId);
-        let urls: string[] = [];
-        for (let bookmark of bookmarks) { //this only runs once
-            urls = await getAllurls(bookmark);
+                //temporarily disable the listener
+
+                await addTabstoGroup(tabIdOpened, uniqueGroupName);
+                console.log("Added tabs");
+                browser.tabs.onCreated.addListener(addTab);
+            }
+                //await moveTabs(tabIdOpened, uniqueGroupName, storage);
+        } else {
+            console.log("clicked on openBookmarknewWindow");
+            let urls: string[] = [];
+           
+            urls = await getAllurls(bookmarks[0]);
+            if (browser.tabs.onCreated.hasListener(addTab)){
+                browser.tabs.onCreated.removeListener(addTab);
+                
+                let window = await browser.windows.create({ focused: true, type: "normal", url: urls });
+                let tabs = window.tabs;
+                let tabIds = tabs!.map((tab) => tab.id);
+                let groupName = bookmarks[0].title;
+                let storage = await browser.storage.session.get();
+                let uniqueGroupName = handleRepitition(groupName, storage);
+                await addTabstoGroup(tabIds, uniqueGroupName);
+                
+                browser.tabs.onCreated.addListener(addTab);
+            }
+            
+            
         }
-        let window = await browser.windows.create({ focused: true, type: "normal", url: urls });
-        let tabs = window.tabs;
-        let tabIds = tabs!.map((tab) => tab.id);
-        /* console.log("tabs after creating a new window");
-        console.log(tabs);
-        if (tabs !== undefined){
-            let storage = await browser.storage.session.get();
-            let groupName = bookmarks[0].title;
-            let uniqueGroupName = handleRepitition(groupName, storage);
-            storage[uniqueGroupName] = tabs;
-            await browser.storage.session.set(storage);
-            console.log("added bookmarked tabs to group");
-        } */
-        let groupName = bookmarks[0].title;
-        let storage = await browser.storage.session.get();
-        let uniqueGroupName = handleRepitition(groupName, storage);
-        await moveTabs(tabIds, uniqueGroupName, storage);
     }
+
 }
 
-async function moveTabs(tabIds: (number | undefined)[], uniqueGroupName: string, storage: { [key: string]: any; }) {
-    storage['Unassigned'].filter((tab: browser.tabs.Tab) => tabIds.includes(tab.id));
+async function addTabstoGroup(tabIds: (number | undefined)[], uniqueGroupName: string){
+    let storage = await browser.storage.session.get();
     let tabList = [];
 
     for (let tabId of tabIds) {
@@ -88,6 +91,22 @@ async function moveTabs(tabIds: (number | undefined)[], uniqueGroupName: string,
     await browser.storage.session.set(storage);
 
 }
+
+/* async function moveTabs(tabIds: (number | undefined)[], uniqueGroupName: string, storage: { [key: string]: any; }) {
+    storage['Unassigned'].filter((tab: browser.tabs.Tab) => tabIds.includes(tab.id));
+    let tabList = [];
+
+    for (let tabId of tabIds) {
+        if (typeof tabId === "number") {
+            let tab = await browser.tabs.get(tabId);
+            tabList.push(tab);
+        }
+    }
+    storage[uniqueGroupName] = tabList;
+
+    await browser.storage.session.set(storage);
+} */
+
 function handleRepitition(groupName: string, storage: { [key: string]: any; }) {
     var res = groupName;
     console.log(storage[res]);

@@ -11,7 +11,7 @@ browser.contextMenus.onClicked.addListener(handleContextMenuClicks)
 
 browser.tabs.onCreated.addListener(addTab);
 browser.tabs.onRemoved.addListener(removeTab);
-browser.tabs.onUpdated.addListener(updateTab);
+browser.tabs.onUpdated.addListener(updateTab, {properties: ["title"]});
 
 browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.type === "open_tabs_new_win"){
