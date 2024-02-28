@@ -14,7 +14,7 @@
 
 .group-header{
     display: grid;
-    grid-template-columns: 10% 70% 10% 10%;
+    grid-template-columns: 10% 60% 10% 10% 10%;
    /*  grid-column-gap: 5px; */
     justify-items: stretch;
     
@@ -23,9 +23,9 @@
 .expand-collapse-tabs{
     grid-column: 1 / 2;
 }
-.expand-collapse-tabs:hover{
+/* .expand-collapse-tabs:hover{
     background-color: grey;
-}
+} */
 
 .group-header-category{
     text-align: start;
@@ -37,15 +37,28 @@
     grid-column: 3 / 4;
     
 }
-
+/* 
 .button-open-group-new-window:hover{
     background-color: grey;
 }
-
+ */
 .bookmark-group{
     grid-column: 4 / 5;
 }
-
+/* 
 .bookmark-group:hover{
     background-color: grey;
+} */
+
+.button-remove-group{
+    grid-column: 5 / 6;
+}
+
+/* .button-remove-group:hover{
+    background-color: grey;
+} */
+
+.button:hover{
+    color: grey;
+    size: "lg";
 }
