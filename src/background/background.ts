@@ -1,6 +1,6 @@
 import { handleContextMenuClicks } from "./contextMenus";
 import { init } from "./init";
-import { addTab, removeTab, updateTab } from "./tabEvents";
+import { addTab, onCloseWindow, removeTab, updateTab } from "./tabEvents";
 
 export {}
 
@@ -12,6 +12,14 @@ browser.contextMenus.onClicked.addListener(handleContextMenuClicks)
 browser.tabs.onCreated.addListener(addTab);
 browser.tabs.onRemoved.addListener(removeTab);
 browser.tabs.onUpdated.addListener(updateTab, {properties: ["title"]});
+
+browser.windows.onRemoved.addListener(onCloseWindow)
+
+/* browser.windows.onCreated.addListener(() => {
+    console.log("adding event listener");
+    window.addEventListener("beforeunload", onWindowClose);
+}) */
+
 
 browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.type === "open_tabs_new_win"){
