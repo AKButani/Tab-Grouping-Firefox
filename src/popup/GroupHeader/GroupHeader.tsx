@@ -27,11 +27,11 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
     } */
 
     const openTabsnewWindow = () => {
-        let tabs = props.tabs.map((tab) => tab.id);
+        let tabIds = props.tabs.map((tab) => tab.id);
 
         //tells background to create new window
         browser.runtime.sendMessage({
-            tabIds: tabs,
+            tabIds: tabIds,
             type: "open_tabs_new_win"
         })    
         
@@ -52,16 +52,39 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
             }
         }, (e) => {console.error(e)}) */
         try {
-            await browser.runtime.sendMessage({
+            let message = await browser.runtime.sendMessage({
                 type: "store-as-bookmark",
                 title: props.groupName,
                 tabs: props.tabs,
             });
-            setAlert(true);
+            if (message){
+                setAlert(true);
+            }else{
+                console.log("error");
+            }
+            
         } catch (error) {
             console.error(error);
         }
+    }
+
+    const closeGroup = async () => {
+        let tabIds = props.tabs.map((tab) => tab.id);
         
+        try{
+            let response = await browser.runtime.sendMessage({
+                type: "remove-group-and-tabs",
+                title: props.groupName,
+                tabIds: tabIds,
+            });
+            if (response){
+                
+            }else{
+                console.error("error");
+            }
+        }catch (error){
+            console.error(error)
+        }
     }
 
     return (
@@ -74,7 +97,7 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
                 </h2>
                 <FontAwesomeIcon icon={faPlus} className='button-open-group-new-window button' onClick={openTabsnewWindow} />
                 <FontAwesomeIcon icon={faBookmark} className='bookmark-group button' onClick={storeBookmark}/>
-                <FontAwesomeIcon icon={faXmark} className='button-remove-group button' />
+                <FontAwesomeIcon icon={faXmark} className='button-remove-group button' onClick={closeGroup}/>
             </div>
         </>
     );

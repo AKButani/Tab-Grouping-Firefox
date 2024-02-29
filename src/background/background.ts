@@ -21,43 +21,50 @@ browser.windows.onRemoved.addListener(onCloseWindow)
 }) */
 
 
-browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    if (msg.type === "open_tabs_new_win"){
+browser.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
+    if (msg.type === "open_tabs_new_win") {
         //Opens a group of tabs in a new window
-        
         let tabs = msg.tabIds;
-        browser.windows.create({tabId: tabs[0]}).then(newWindow => {
-            //remove 1st element since it has been moved already
-            tabs.shift();
-            // Move the tabs to the new window
-            browser.tabs.move(tabs, { windowId: newWindow.id, index: -1 });
-        });
-    } else if (msg.type === "store-as-bookmark"){
+        let newWindow = await browser.windows.create({ tabId: tabs[0] })
+        //remove 1st element since it has been moved already
+        tabs.shift();
+        // Move the tabs to the new window
+        browser.tabs.move(tabs, { windowId: newWindow.id, index: -1 });
+    } else if (msg.type === "store-as-bookmark") {
         //Stores group of tabs as a bookmark
-
-
-        browser.bookmarks.create({title: msg.title, type: "folder"}).then((bookmark) => {
-            /* console.log("Bookmark created");
-            console.log(bookmark); */
-            let bookmarkPromises = [];
-            for (let tab of msg.tabs){
-                bookmarkPromises.push(browser.bookmarks.create({parentId: bookmark.id, title: tab.title, url: tab.url}).then(() =>
-                   {console.log("added bookmark of " + tab.title + "to folder");}
-                ));
+        try {
+            let bookmark = await browser.bookmarks.create({ title: msg.title, type: "folder" })
+                /* console.log("Bookmark created");
+                console.log(bookmark); */
+            for (let tab of msg.tabs) {
+                await browser.bookmarks.create({ parentId: bookmark.id, title: tab.title, url: tab.url })
             };
-
+            return true;
             //waits until all tabs are bookmarked and only then sends a message
-            Promise.all(bookmarkPromises).then(() => {
+            /* Promise.all(bookmarkPromises).then(() => {
                 console.log("sending response");
                 sendResponse({ response: "success" });
             }).catch(error => {
                 console.error("Error creating bookmarks:", error);
                 sendResponse({ response: "error" });
-            });
-        }, (e) => {
-            sendResponse({response: "error" + e});
-        });
+            }); */
 
-        
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
+    } else if (msg.type === "remove-group-and-tabs"){
+        //removes the group and closes all the tabs in the group
+
+        try {
+            await browser.tabs.remove(msg.tabIds);
+            let storage = await browser.storage.session.get() as Record<string, browser.tabs.Tab[]>;
+            delete storage[msg.title];
+            browser.storage.session.set(storage);
+            return true;
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
     }
 })
