@@ -50,9 +50,14 @@
     background-color: grey;
 } */
 
-.button-remove-group{
+.button-remove-group-wrapper{
     grid-column: 5 / 6;
 }
+
+.button-remove-group-wrapper:hover{
+    background-color: yellow;
+}
+
 
 /* .button-remove-group:hover{
     background-color: grey;

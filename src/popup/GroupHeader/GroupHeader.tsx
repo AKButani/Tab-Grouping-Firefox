@@ -6,6 +6,7 @@ import "./GroupHeader.css"
 import { Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark, faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { RemoveGroup } from '../RemoveGroup';
 
 export const GroupHeader = (props: { groupName: string; isExpanded: boolean; setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>; onDrop: (TabId: browser.tabs.Tab, groupName: string) => void; tabs: browser.tabs.Tab[] }) => {
     const [{ canDrop, isOver }, drop] = useDrop(() => ({
@@ -97,7 +98,7 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
                 </h2>
                 <FontAwesomeIcon icon={faPlus} className='button-open-group-new-window button' onClick={openTabsnewWindow} />
                 <FontAwesomeIcon icon={faBookmark} className='bookmark-group button' onClick={storeBookmark}/>
-                <FontAwesomeIcon icon={faXmark} className='button-remove-group button' onClick={closeGroup}/>
+                <RemoveGroup tabs={props.tabs} groupName={props.groupName}/>
             </div>
         </>
     );
