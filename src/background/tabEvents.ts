@@ -1,23 +1,33 @@
+import { addToQueue } from "./tabQueue";
 
 //executes whenever a new tab is opened
 export async function addTab(tab: browser.tabs.Tab) {
     console.log("in add Tab");
-    let stored = await browser.storage.session.get();
-    stored['Unassigned'].push(tab);
-    await browser.storage.session.set(stored);
+    const task = async () => {
+        let stored = await browser.storage.session.get();
+        stored['Unassigned'].push(tab);
+        await browser.storage.session.set(stored);
+    }
+    await addToQueue(task);
 }
+
 //removes tab from storage whenever a tab is closed and NOT the whole window
 export async function removeTab(TabId: number, removeInfo: browser.tabs._OnRemovedRemoveInfo) {
     
     if(!removeInfo.isWindowClosing){
-        console.log("in remove tab");
-        let stored = await browser.storage.session.get();
-        console.log(stored);
-        for (let group of Object.keys(stored)) {
-            stored[group] = stored[group].filter((element: browser.tabs.Tab) => element.id !== TabId);
+        const task = async () => {
+            console.log("in remove tab");
+            let stored = await browser.storage.session.get();
+            console.log(stored);
+            for (let group of Object.keys(stored)) {
+                stored[group] = stored[group].filter((element: browser.tabs.Tab) => element.id !== TabId);
+            }
+            await browser.storage.session.set(stored);
+            console.log("FINISHED REMOVE TAB");
         }
-        await browser.storage.session.set(stored);
-        console.log("FINISHED REMOVE TAB");
+
+        await addToQueue(task);
+        
     }
     
 }
@@ -65,7 +75,7 @@ export async function onCloseWindow(windowId: number){
     
     let storage = await browser.storage.session.get() as Record<string, browser.tabs.Tab[]>;
 
-    //removes tab entries that are not in tabs
+    //removes tab entries that are not in list of all open tabs
     //meaning these tabs have been closed
     for (let group of Object.keys(storage)){
         storage[group] = storage[group].filter((tab) => tabsIds.includes(tab.id));

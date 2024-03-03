@@ -55,16 +55,35 @@ browser.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
         }
     } else if (msg.type === "remove-group-and-tabs"){
         //removes the group and closes all the tabs in the group
-
+       /*  let removedListener = false; */
         try {
+            
+           /*  if (browser.tabs.onRemoved.hasListener(removeTab)){ //not sure this needs to be checked
+                removedListener = true;
+                browser.tabs.onRemoved.removeListener(removeTab); //reomve listener bc of race conditions issues when multiple tabs close
+                console.log(browser.tabs.onRemoved.hasListener(removeTab));
+                console.log("removed listener");
+            } */
             await browser.tabs.remove(msg.tabIds);
             let storage = await browser.storage.session.get() as Record<string, browser.tabs.Tab[]>;
+            console.log(storage);
+            console.log(msg.title);
             delete storage[msg.title];
-            browser.storage.session.set(storage);
-            return true;
+            
+            let updatedStorage = {...storage};
+            console.log(updatedStorage);
+            await browser.storage.session.set(updatedStorage); 
         } catch (error) {
+           /*  if(removedListener){
+                browser.tabs.onRemoved.addListener(removeTab);
+            } */
             console.error(error);
             return false;
         }
+        /* if(removedListener){
+            console.log("adding listener back");
+            browser.tabs.onRemoved.addListener(removeTab);
+        } */
+        return true;
     }
 })

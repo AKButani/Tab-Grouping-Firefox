@@ -13,6 +13,7 @@ const GroupList = () => {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
+        console.log("fetching group");
         const storedGroups = await browser.storage.session.get() as TabGroups;
         setGroups(storedGroups);
         console.log(storedGroups)

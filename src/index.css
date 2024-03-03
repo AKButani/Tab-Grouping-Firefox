@@ -8,6 +8,8 @@ body {
   flex-direction: column;
   gap: 10px;
   row-gap: 10px;
+  min-width: 400px;
+  min-height: 200px;
 }
 
 code {
