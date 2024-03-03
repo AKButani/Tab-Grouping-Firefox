@@ -48,22 +48,27 @@ export async function updateTab(tabId: number, changeInfo: browser.tabs._OnUpdat
     console.log("in update tab");
     console.log(changeInfo);
     /* console.log(tabId); */
-    let stored = await browser.storage.session.get();
+    const task = async () => {
+        let stored = await browser.storage.session.get();
 
-    console.log("in updateTab");
-    /* console.log(changeInfo);
-       console.log(stored); */
+        console.log("in updateTab");
+        /* console.log(changeInfo);
+        console.log(stored); */
 
-    let group = findGroup(stored, tabId);
+        let group = findGroup(stored, tabId);
 
-    /* console.log("group: " + group);
-    console.log(stored[group]); */
-    stored[group] = stored[group].filter((tab: browser.tabs.Tab) => tab.id !== tabId);
+        /* console.log("group: " + group);
+        console.log(stored[group]); */
+        stored[group] = stored[group].filter((tab: browser.tabs.Tab) => tab.id !== tabId);
 
-    /*  console.log("after filter");
-     console.log(stored[group]); */
-    stored[group].push(tab);
-    await browser.storage.session.set(stored);
+        /*  console.log("after filter");
+        console.log(stored[group]); */
+        stored[group].push(tab);
+        await browser.storage.session.set(stored);
+    }
+
+    addToQueue(task);
+    
 
 }
 
