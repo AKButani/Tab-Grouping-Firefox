@@ -1,7 +1,6 @@
 import { handleContextMenuClicks } from "./contextMenus";
 import { init } from "./init";
 import { addTab, onCloseWindow, removeTab, updateTab } from "./tabEvents";
-import { addToQueue } from "./tabQueue";
 
 export {}
 

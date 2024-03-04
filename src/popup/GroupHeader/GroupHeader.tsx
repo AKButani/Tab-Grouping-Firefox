@@ -5,7 +5,7 @@ import { FaAngleRight, FaAngleDown } from "react-icons/fa";
 import "./GroupHeader.css"
 import { Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBookmark, faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faBookmark, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { RemoveGroup } from '../RemoveGroup';
 
 export const GroupHeader = (props: { groupName: string; isExpanded: boolean; setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>; onDrop: (TabId: browser.tabs.Tab, groupName: string) => void; tabs: browser.tabs.Tab[] }) => {
@@ -66,25 +66,6 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
             
         } catch (error) {
             console.error(error);
-        }
-    }
-
-    const closeGroup = async () => {
-        let tabIds = props.tabs.map((tab) => tab.id);
-        
-        try{
-            let response = await browser.runtime.sendMessage({
-                type: "remove-group-and-tabs",
-                title: props.groupName,
-                tabIds: tabIds,
-            });
-            if (response){
-                
-            }else{
-                console.error("error");
-            }
-        }catch (error){
-            console.error(error)
         }
     }
 

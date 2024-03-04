@@ -1,4 +1,4 @@
-import React, {useState, useEffect, createContext, useContext} from "react";
+import React, {useState, useEffect, createContext} from "react";
 import TabGroupEntry from "./TabGroupEntry/TabGroupEntry";
 import { TabGroups } from "./types";
 import { DndProvider } from "react-dnd";
