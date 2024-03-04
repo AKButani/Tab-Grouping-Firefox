@@ -5,12 +5,13 @@ import "./RemoveGroup.css"
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 /* import 'primeicons/primeicons.css'; */
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { UpdateGroupsContext } from "./GroupList";
 
 export const RemoveGroup = (props: {tabs: browser.tabs.Tab[], groupName: string}) => {
     /* const buttonRef = useRef(null); */
     const [dialogVisible, setDialogVisible] = useState(false);
-
+    const setGroups = useContext(UpdateGroupsContext);
 
     const accept = async () => {
         let tabIds = props.tabs.map((tab) => tab.id);
@@ -22,6 +23,12 @@ export const RemoveGroup = (props: {tabs: browser.tabs.Tab[], groupName: string}
                 tabIds: tabIds,
             });
             if (response){
+                //force rerender the popup?
+                /* window.close(); */
+                const groups = await browser.storage.session.get();
+                if (setGroups !== undefined){
+                    setGroups(groups);
+                }
                 
             }else{
                 console.error("error");

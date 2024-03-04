@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, createContext, useContext} from "react";
 import TabGroupEntry from "./TabGroupEntry/TabGroupEntry";
 import { TabGroups } from "./types";
 import { DndProvider } from "react-dnd";
@@ -6,9 +6,12 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import AddGroup from "./AddGroup";
 import Tooltips from "./Tooltips";
 
+export const UpdateGroupsContext = createContext<React.Dispatch<React.SetStateAction<TabGroups>> | undefined>(undefined);
+
 const GroupList = () => {
   console.log("in grouplist")
   const [groups, setGroups] = useState({} as TabGroups);
+  
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -74,11 +77,13 @@ const GroupList = () => {
   return (
     <>
       <DndProvider backend={HTML5Backend}>
-        {Object.keys(groups).map((groupName) => {
-          return (
-            <TabGroupEntry groupName={groupName} tabs={groups[groupName]} dropHandler={dropHandler} />
-          );
-        })}
+        <UpdateGroupsContext.Provider value={setGroups}>
+          {Object.keys(groups).map((groupName) => {
+            return (
+              <TabGroupEntry groupName={groupName} tabs={groups[groupName]} dropHandler={dropHandler} />
+            );
+          })}
+        </UpdateGroupsContext.Provider>
       </DndProvider>
       <AddGroup onClick={addGroup} />
       <Tooltips />
