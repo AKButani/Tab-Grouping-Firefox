@@ -1,11 +1,11 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {ConfirmDialog, confirmDialog} from 'primereact/confirmdialog';
+import {ConfirmDialog} from 'primereact/confirmdialog';
 import "./RemoveGroup.css"
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 /* import 'primeicons/primeicons.css'; */
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 
 export const RemoveGroup = (props: {tabs: browser.tabs.Tab[], groupName: string}) => {
     /* const buttonRef = useRef(null); */
@@ -31,15 +31,11 @@ export const RemoveGroup = (props: {tabs: browser.tabs.Tab[], groupName: string}
         }
     }
 
-    const reject = () => {
-        return;
-    }
-
-    const confirm = () => {
+/*     const confirm = () => {
         /* let target = undefined;
         if (buttonRef.current){
             target = buttonRef.current;
-        } */
+        } 
         console.log("in confirmation dialog");
         
         confirmDialog({
@@ -48,9 +44,8 @@ export const RemoveGroup = (props: {tabs: browser.tabs.Tab[], groupName: string}
             defaultFocus: 'accept',
             accept,
             reject,
-            
         });
-    } 
+    }  */
     
 
     
