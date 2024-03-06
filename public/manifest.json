@@ -14,6 +14,9 @@
         "default_title": "Groupify",
         "default_popup": "index.html"
     },
+    "options_ui": {
+        "page": "options.html"        
+    },
   
     "permissions": ["contextMenus", "theme", "activeTab", "tabs", "storage", "bookmarks"]
 }
