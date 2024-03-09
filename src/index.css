@@ -4,12 +4,14 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  display: flex;
+  /* display: flex;
   flex-direction: column;
-  gap: 10px;
-  row-gap: 10px;
+  gap: 100px;
+  row-gap: 50px; */
   min-width: 400px;
   min-height: 200px;
+  background-color: #1c1b22;
+  border: #1c1b22;
 }
 
 code {

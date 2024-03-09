@@ -42,7 +42,7 @@ export const DraggableTabEntry = (props: { tab: browser.tabs.Tab; }) => {
     };
 
     return (
-        <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1, backgroundColor: isDragging ? "grey" : "white", cursor: 'pointer' }} onClick={openTab}>
+        <div ref={drag} className="tab-entry" style={{ opacity: isDragging ? 0.5 : 1, cursor: 'pointer' }} onClick={openTab}>
             {props.tab.title} {props.tab.id}
         </div>
     );

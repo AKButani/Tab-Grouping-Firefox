@@ -1,17 +1,18 @@
-import React, {useState, useEffect, createContext} from "react";
+import React, {useState, useEffect, createContext, useContext} from "react";
 import TabGroupEntry from "./TabGroupEntry/TabGroupEntry";
 import { TabGroups } from "./types";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import AddGroup from "./AddGroup";
 import Tooltips from "./Tooltips";
+import { DarkModeContext } from "./App";
 
 export const UpdateGroupsContext = createContext<React.Dispatch<React.SetStateAction<TabGroups>> | undefined>(undefined);
 
 const GroupList = () => {
   console.log("in grouplist")
   const [groups, setGroups] = useState({} as TabGroups);
-  
+  const darkMode = useContext(DarkModeContext);
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -75,7 +76,7 @@ const GroupList = () => {
 
 
   return (
-    <>
+    <div className={`group-list-container ${darkMode.darkMode ? "dark-mode" : "light-mode"}`}>
       <DndProvider backend={HTML5Backend}>
         <UpdateGroupsContext.Provider value={setGroups}>
           {Object.keys(groups).map((groupName) => {
@@ -87,7 +88,7 @@ const GroupList = () => {
       </DndProvider>
       <AddGroup onClick={addGroup} />
       <Tooltips />
-    </>
+    </div>
   );
 }
 

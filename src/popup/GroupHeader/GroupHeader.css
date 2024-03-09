@@ -17,7 +17,7 @@
     grid-template-columns: 10% 60% 10% 10% 10%;
    /*  grid-column-gap: 5px; */
     justify-items: stretch;
-    
+    background-color: #42414d;
 }
 
 .expand-collapse-tabs{
@@ -54,9 +54,9 @@
     grid-column: 5 / 6;
 }
 
-.button-remove-group-wrapper:hover{
+/* .button-remove-group-wrapper:hover{
     background-color: yellow;
-}
+} */
 
 
 /* .button-remove-group:hover{
@@ -67,3 +67,4 @@
     color: grey;
     size: "lg";
 }
+

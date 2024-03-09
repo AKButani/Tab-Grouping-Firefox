@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useDrop } from 'react-dnd';
 import { ItemTypes } from "../types";
 import { FaAngleRight, FaAngleDown } from "react-icons/fa";
@@ -7,6 +7,7 @@ import { Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { RemoveGroup } from '../RemoveGroup';
+import { DarkModeContext } from '../App';
 
 export const GroupHeader = (props: { groupName: string; isExpanded: boolean; setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>; onDrop: (TabId: browser.tabs.Tab, groupName: string) => void; tabs: browser.tabs.Tab[] }) => {
     const [{ canDrop, isOver }, drop] = useDrop(() => ({
@@ -19,6 +20,9 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
     }));
 
     const [showAlert, setAlert] = useState(false);
+
+    
+    const darkMode = useContext(DarkModeContext);
 
     /* const onOpenSuccess = async (window: browser.windows.Window, tabs: number[]) => {
         //now open other tabs in this window
@@ -72,7 +76,7 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
     return (
         <>  
             {showAlert && <Alert dismissible variant='success' onClose={() => setAlert(false)}> Success </Alert>}
-            <div ref={drop} className='group-header' style={{ backgroundColor: (isOver && canDrop) ? 'grey' : 'red' }}>
+            <div ref={drop} className='group-header' style={{ backgroundColor: (isOver && canDrop) ? 'grey' : (darkMode.darkMode) ? "#42414d" : "#f9f9fb"}}>
                 {props.isExpanded ? <FaAngleDown onClick={() => props.setIsExpanded(!props.isExpanded)} className='expand-collapse-tabs button'/> : <FaAngleRight onClick={() => props.setIsExpanded(!props.isExpanded)} className='expand-collapse-tabs button'/>}
                 <h2 className='group-header-category'>
                     {props.groupName}
