@@ -24,7 +24,7 @@ function App() {
     const darkModefunc = async () => {
       const mode  = await browser.storage.local.get('mode');
       console.log(mode);
-      if (mode === undefined || mode.mode === 'light') {
+      if (mode === undefined || Object.keys(mode).length === 0 || mode.mode === 'light') {
         setDarkMode(false);
       } else {
         setDarkMode(true);

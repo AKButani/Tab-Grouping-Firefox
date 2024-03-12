@@ -31,7 +31,7 @@ async function restoreOptions() {
     let mode = await browser.storage.local.get('mode');
     console.log(mode);
     let selectedMode;
-    if (mode === undefined) {
+    if (mode === undefined || Object.keys(mode).length === 0) {
         selectedMode = "light";
     }else{
         selectedMode = mode.mode;
