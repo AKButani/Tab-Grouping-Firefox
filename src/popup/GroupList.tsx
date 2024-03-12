@@ -3,7 +3,7 @@ import TabGroupEntry from "./TabGroupEntry/TabGroupEntry";
 import { TabGroups } from "./types";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import AddGroup from "./AddGroup";
+import AddGroup from "./AddGroup/AddGroup";
 import Tooltips from "./Tooltips";
 import { DarkModeContext } from "./App";
 

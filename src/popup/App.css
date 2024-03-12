@@ -59,3 +59,7 @@
   background-color: #f0f0f4;
   color: #1c1b22;
 }
+
+input:focus{
+  outline: none;
+}

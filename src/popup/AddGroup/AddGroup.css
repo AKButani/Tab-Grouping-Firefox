@@ -1,0 +1,10 @@
+.add-group-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+    align-items: center;
+    border-radius: 5px;
+    padding: 10px;
+    height: fit-content;
+    gap: 10px
+}
