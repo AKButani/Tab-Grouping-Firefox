@@ -141,7 +141,7 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
                 )}
                 
                 {
-                    !renaming && 
+                    !renaming && props.groupName !== "Unassigned" &&
                     <FontAwesomeIcon icon={faPenToSquare} className='rename-group button' onClick={() => setRenaming(true)}/>
                 }
                 <FontAwesomeIcon icon={faPlus} className='button-open-group-new-window button' onClick={openTabsnewWindow} />
