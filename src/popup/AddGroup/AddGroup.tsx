@@ -1,18 +1,24 @@
-import React, { useContext } from 'react';
+import { useContext, useState } from 'react';
 import './AddGroup.css';
 import { DarkModeContext } from '../App';
 
 const AddGroup = (props: {onClick: (newGroup: string) => void}) => {
-  let currSearch = "";
+  const [currSearch, setCurrSearch] = useState("");
   const darkMode = useContext(DarkModeContext);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    currSearch = event.target.value;
+    setCurrSearch(event.target.value);
   };
 
   const handleSearch = () => {
     props.onClick(currSearch);
-    currSearch = "";
+    setCurrSearch("");
+  };
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSearch(); // Call handleSearch when Enter key is pressed
+    }
   };
 
   return (
@@ -21,6 +27,8 @@ const AddGroup = (props: {onClick: (newGroup: string) => void}) => {
         type="text"
         placeholder="Add Group"
         onChange={handleChange}
+        value={currSearch}
+        onKeyDown={handleKeyPress}
         style={{ 
           width: '75%', 
           border: 'none', 
