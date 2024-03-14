@@ -1,4 +1,5 @@
 import { handleContextMenuClicks } from "./contextMenus";
+import { handleRepitition } from "./helperfunctions";
 import { init } from "./init";
 import { addTab, onCloseWindow, removeTab, updateTab } from "./tabEvents";
 
@@ -66,6 +67,22 @@ browser.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
             return false;
         }
 
+        return true;
+    } else if (msg.type === "rename-group"){
+        try {
+            let storage = await browser.storage.session.get();
+            let newUniqueName = handleRepitition(msg.newName, storage); 
+            let tabs = storage[msg.oldName];
+            storage[newUniqueName] = tabs;
+            
+            await browser.storage.session.set(storage);
+            await browser.storage.session.remove(msg.oldName);
+            console.log("storage after renaming");
+            console.log(await browser.storage.session.get());
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
         return true;
     }
 })

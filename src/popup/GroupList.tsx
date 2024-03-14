@@ -44,6 +44,10 @@ const GroupList = () => {
       }
   
       // Add tab to the new group
+      console.log(updatedGroups[groupName]);
+      /* if (updatedGroups[groupName] === undefined) {
+        updatedGroups[groupName] = [];
+      } */
       updatedGroups[groupName] = [...updatedGroups[groupName], Tab];
   
       // Update the state and storage

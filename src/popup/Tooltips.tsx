@@ -35,6 +35,10 @@ const Tooltips = () => {
                 selector=".button-remove-group"
                 content="Remove Group and Close all Tabs"
             />
+            <MyTooltip 
+                selector=".rename-group"
+                content="Rename Group"
+            />
         </>
     );
 }
