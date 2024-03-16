@@ -84,5 +84,15 @@ browser.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
             return false;
         }
         return true;
+    } else if (msg.type === "focus-tab"){
+        try { 
+            let tab = await browser.tabs.get(msg.tabId);
+            await browser.windows.update(tab.windowId!, { focused: true });
+            await browser.tabs.update(msg.tabId, { active: true });
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
+        return true;
     }
 })

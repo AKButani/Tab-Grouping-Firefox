@@ -3,7 +3,6 @@ import { useDrag } from 'react-dnd';
 import { ItemTypes } from './types';
 
 export const TabList = (props: { tabs: browser.tabs.Tab[]; }) => {
-
     return (
         <>
             {props.tabs.map((tab) => {
@@ -24,8 +23,8 @@ export const DraggableTabEntry = (props: { tab: browser.tabs.Tab; }) => {
         }),
     }), [props.tab]);
 
-    const openTab = async () => {
-        let windows = await browser.windows.getAll({
+    const focusOnTab = async () => {
+        /* let windows = await browser.windows.getAll({
             populate: true,
         });
 
@@ -37,12 +36,24 @@ export const DraggableTabEntry = (props: { tab: browser.tabs.Tab; }) => {
                     break;
                 }
             }
-        }
-        browser.tabs.update(props.tab.id!, { active: true });
+        } */
+        /* let tab = await browser.tabs.get(props.tab.id!);
+        console.log(tab);
+        let windows = await browser.windows.getAll({});
+        console.log(windows);
+        await browser.windows.update(tab.windowId!, { focused: true });
+        await browser.tabs.update(props.tab.id!, { active: true }); */
+
+
+        await browser.runtime.sendMessage({
+            type: "focus-tab",
+            tabId: props.tab.id,
+        });
+
     };
 
     return (
-        <div ref={drag} className="tab-entry" style={{ opacity: isDragging ? 0.5 : 1, cursor: 'pointer' }} onClick={openTab}>
+        <div ref={drag} className="tab-entry" style={{ opacity: isDragging ? 0.5 : 1, cursor: 'pointer' }} onClick={focusOnTab}>
             {props.tab.title} {props.tab.id}
         </div>
     );
