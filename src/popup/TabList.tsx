@@ -24,26 +24,6 @@ export const DraggableTabEntry = (props: { tab: browser.tabs.Tab; }) => {
     }), [props.tab]);
 
     const focusOnTab = async () => {
-        /* let windows = await browser.windows.getAll({
-            populate: true,
-        });
-
-        //find in which window the tab is
-        for (let window of windows){
-            for(let tab of window.tabs!){
-                if(tab.id === props.tab.id){
-                    await browser.windows.update(window.id!, {focused: true});
-                    break;
-                }
-            }
-        } */
-        /* let tab = await browser.tabs.get(props.tab.id!);
-        console.log(tab);
-        let windows = await browser.windows.getAll({});
-        console.log(windows);
-        await browser.windows.update(tab.windowId!, { focused: true });
-        await browser.tabs.update(props.tab.id!, { active: true }); */
-
 
         await browser.runtime.sendMessage({
             type: "focus-tab",
