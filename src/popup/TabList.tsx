@@ -1,16 +1,16 @@
-import React from 'react';
 import { useDrag } from 'react-dnd';
 import { ItemTypes } from './types';
+import "./TabList.css"
 
 export const TabList = (props: { tabs: browser.tabs.Tab[]; }) => {
     return (
-        <>
+        <div className='tabs-list'>
             {props.tabs.map((tab) => {
                 return (
                     <DraggableTabEntry tab={tab} />
                 );
             })}
-        </>
+        </div>
     );
 };
 
@@ -33,7 +33,7 @@ export const DraggableTabEntry = (props: { tab: browser.tabs.Tab; }) => {
     };
 
     return (
-        <div ref={drag} className="tab-entry" style={{ opacity: isDragging ? 0.5 : 1, cursor: 'pointer' }} onClick={focusOnTab}>
+        <div ref={drag} className="tab-entry" style={{ opacity: isDragging ? 0.5 : 1 }} onClick={focusOnTab}>
             {props.tab.title} {props.tab.id}
         </div>
     );

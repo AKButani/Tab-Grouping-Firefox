@@ -118,7 +118,7 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
     return (
         <>  
             {showAlert && <Alert dismissible variant='success' onClose={() => setAlert(false)}> Success </Alert>}
-            <div ref={drop} className='group-header' style={{ backgroundColor: (isOver && canDrop) ? 'grey' : (darkMode.darkMode) ? "#42414d" : "#f9f9fb"}}>
+            <div ref={drop} className='group-header' style={{ backgroundColor: (isOver && canDrop) ? 'grey' : (!darkMode.darkMode) ? /* "#f9f9fb" */ "#ffffff": ""}}>
                 {props.isExpanded ? <FaAngleDown onClick={() => props.setIsExpanded(!props.isExpanded)} className='expand-collapse-tabs button'/> : <FaAngleRight onClick={() => props.setIsExpanded(!props.isExpanded)} className='expand-collapse-tabs button'/>}
                 {!renaming && 
                     (<h2 className='group-header-category'>

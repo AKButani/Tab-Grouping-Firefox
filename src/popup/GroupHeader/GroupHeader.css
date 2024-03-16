@@ -15,9 +15,11 @@
 .group-header{
     display: grid;
     grid-template-columns: 10% 50% 10% 10% 10% 10%;
-   /*  grid-column-gap: 5px; */
+   /*  grid-column-gap: 5px;  */
     justify-items: stretch;
     background-color: #42414d;
+    border-radius: 5px;
+    align-items: center;
 }
 
 .expand-collapse-tabs{

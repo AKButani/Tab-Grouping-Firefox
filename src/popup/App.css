@@ -1,3 +1,19 @@
+/* 
+  Styling
+  Background color:
+  - #1c1b22: Dark mode
+  - #f0f0f4: Light mode
+
+  GroupEntries background color:
+  - #42414d: Dark mode
+  - #ffffff: Light mode
+
+  Text color:
+  - #fbfbfe: Dark mode
+  - #15141a: Light mode
+*/
+
+
 .App {
   text-align: center;
   display: flex;
@@ -18,7 +34,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #1c1b22;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -47,17 +63,18 @@
   gap: 10px;
   align-items: stretch;
   justify-content: center;
-
 }
 
 .dark-mode{
   background-color: #1c1b22;
-  color: #f0f0f4;
+  /* color: #f0f0f4;  */
+  color: #fbfbfe
+  /* color is text-color */
 }
 
 .light-mode{
   background-color: #f0f0f4;
-  color: #1c1b22;
+  color: #15141a; 
 }
 
 input:focus{
