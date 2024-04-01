@@ -34,9 +34,14 @@ const AddGroup = (props: {onClick: (newGroup: string) => void}) => {
           border: 'none', 
           backgroundColor: (darkMode.darkMode) ? "#1c1b22" : "#f0f0f4", 
           color: (darkMode.darkMode) ? "#fbfbfe" : "#15141a", 
-          fontSize: '1em' }}
+          fontSize: '1em',
+          borderRadius: '5px',
+          flexGrow: 4
+        }}
       />
-      <button className='add-group-button' onClick={handleSearch}>Add Group</button>
+      <button className={`add-group-button ${(darkMode.darkMode ? 'dark-mode': 'light-mode')}`} onClick={handleSearch}>
+        Add
+      </button>
     </div>
   );
 };

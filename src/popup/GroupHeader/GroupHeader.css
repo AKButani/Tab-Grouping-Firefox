@@ -72,5 +72,6 @@
 .button:hover{
     color: grey;
     size: "lg";
+    cursor: pointer;
 }
 
