@@ -1,11 +1,20 @@
 import { createContextMenus } from "./contextMenus";
 
-export function init() {
+export async function init() {
     console.log("background running");
-    initGroups().then(() => {
+    try {
+        await initGroups();
         console.log("initialised groups");
-    }).catch((e) => console.log("Error " + e));
+    } catch (e) {
+        console.log("Error: " + e);
+    }
     createContextMenus();
+
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        let mode = "dark";
+        await browser.storage.local.set({mode});
+    }
+
 }
 
 //Creates groups datastructure as well as puts all open tabs in "Unassigned"
