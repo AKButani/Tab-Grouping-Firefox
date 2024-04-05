@@ -56,7 +56,12 @@ browser.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
         }
     } else if (msg.type === "remove-group-and-tabs"){
         try {
-            await browser.storage.session.remove(msg.title);
+            if (msg.title !== "Unassigned"){
+                await browser.storage.session.remove(msg.title);
+            }else{
+                await browser.storage.session.set({ "Unassigned": [] });
+            }
+            
             let storage = await browser.storage.session.get();
             console.log("storage after removing key");
             console.log(storage);
