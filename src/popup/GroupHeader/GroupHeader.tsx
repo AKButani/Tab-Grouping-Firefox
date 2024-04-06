@@ -10,8 +10,8 @@ import { RemoveGroup } from '../RemoveGroup';
 import { DarkModeContext } from '../App';
 import { UpdateGroupsContext } from '../GroupList';
 
-export const GroupHeader = (props: { groupName: string; isExpanded: boolean; setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>; onDrop: (TabId: browser.tabs.Tab, groupName: string) => void; tabs: browser.tabs.Tab[] }) => {
-    console.log(`in group header ${props.groupName}`)
+export const GroupHeader = (props: { groupName: string; isExpanded: boolean; setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>; onDrop: (tabs: browser.tabs.Tab[], groupName: string) => void; tabs: browser.tabs.Tab[] }) => {
+    //console.log(`in group header ${props.groupName}`)
     
     const groupNameRef = useRef(props.groupName); // Initialize the ref with the initial groupName
 
@@ -21,8 +21,8 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
     }, [props.groupName]);
 
     const [{ canDrop, isOver }, drop] = useDrop(() => ({
-        accept: ItemTypes.tab,
-        drop: (Tab) => (props.onDrop(((Tab as { tab: browser.tabs.Tab; }).tab as browser.tabs.Tab), groupNameRef.current)),
+        accept: ItemTypes.tabs,
+        drop: (tabs) => (props.onDrop(((tabs as { tabs: browser.tabs.Tab[]; }).tabs as browser.tabs.Tab[]), groupNameRef.current)),
         collect: (monitor) => ({
             isOver: monitor.isOver(),
             canDrop: monitor.canDrop()

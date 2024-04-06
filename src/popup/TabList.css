@@ -7,6 +7,10 @@
 
 .tab-entry{
     /* padding: 5px; */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 5px;
     margin: 2px 10px;
     cursor: pointer;
     border-radius: 5px;

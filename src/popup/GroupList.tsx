@@ -10,7 +10,7 @@ import { DarkModeContext } from "./App";
 export const UpdateGroupsContext = createContext<React.Dispatch<React.SetStateAction<TabGroups>> | undefined>(undefined);
 
 const GroupList = () => {
-  console.log("in grouplist")
+  //console.log("in grouplist")
   const [groups, setGroups] = useState({} as TabGroups);
   const darkMode = useContext(DarkModeContext);
 
@@ -30,17 +30,19 @@ const GroupList = () => {
   }, []);
 
 
-  const dropHandler = (Tab: browser.tabs.Tab, groupName: string) => {
+  const dropHandler = (tabs: browser.tabs.Tab[], groupName: string) => {
     // Fetch the current groups
     console.log("in drop handler");
-    console.log(Tab);
+    console.log(tabs);
     console.log(groupName);
+    let tabIds = tabs.map((tab) => tab.id);
     browser.storage.session.get().then((storedGroups) => {
       const updatedGroups = { ...storedGroups };
       console.log(updatedGroups);
-      // Remove the tab from the old group
+
+      // Remove the tabs from the old group
       for (let group of Object.keys(updatedGroups)) {
-        updatedGroups[group] = updatedGroups[group].filter((tab: browser.tabs.Tab) => tab.id !== Tab.id);
+        updatedGroups[group] = updatedGroups[group].filter((tab: browser.tabs.Tab) => !tabIds.includes(tab.id));
       }
   
       // Add tab to the new group
@@ -48,13 +50,13 @@ const GroupList = () => {
       /* if (updatedGroups[groupName] === undefined) {
         updatedGroups[groupName] = [];
       } */
-      updatedGroups[groupName] = [...updatedGroups[groupName], Tab];
+      updatedGroups[groupName] = [...updatedGroups[groupName], ...tabs];
   
       // Update the state and storage
       
       browser.storage.session.set(updatedGroups).then(
-        () => console.log("Set Tab: " + Tab.title + " to group " + groupName),
-        (error) => console.log("Error while setting TabID: " + Tab.id + " to group " + groupName, error)
+        () => console.log("Set Tab: " + tabs + " to group " + groupName),
+        (error) => console.log("Error while setting TabID: " + tabs + " to group " + groupName, error)
       );
       setGroups(updatedGroups);
     });

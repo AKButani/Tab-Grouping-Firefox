@@ -5,8 +5,8 @@ import { TabList } from '../TabList';
 import { DarkModeContext } from '../App';
 
 
-const TabGroupEntry = (props: {groupName: string, tabs: browser.tabs.Tab[], dropHandler: (Tab: browser.tabs.Tab, groupName: string ) => void}) => {
-    console.log("in " + props.groupName + " group entry")
+const TabGroupEntry = (props: {groupName: string, tabs: browser.tabs.Tab[], dropHandler: (tabs: browser.tabs.Tab[], groupName: string ) => void}) => {
+    //console.log("in " + props.groupName + " group entry")
     const [isExpanded, setIsExpanded] = useState(false);
     const darkMode = useContext(DarkModeContext);
 
