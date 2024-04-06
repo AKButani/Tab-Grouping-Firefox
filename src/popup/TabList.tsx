@@ -34,7 +34,7 @@ export const DraggableTabEntry = (props: { tab: browser.tabs.Tab; }) => {
 
     return (
         <div ref={drag} className="tab-entry" style={{ opacity: isDragging ? 0.5 : 1 }} onClick={focusOnTab}>
-            {props.tab.title} {props.tab.id}
+            {props.tab.title}
         </div>
     );
 };
