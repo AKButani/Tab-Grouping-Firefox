@@ -31,8 +31,7 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
     let renameValue = props.groupName;
     const [showAlert, setAlert] = useState(false);
     const [renaming, setRenaming] = useState(false);
-    const setGroups = useContext(UpdateGroupsContext);
-
+    const {updateGroups} = useContext(UpdateGroupsContext);
     
     const darkMode = useContext(DarkModeContext);
 
@@ -100,9 +99,7 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
             });
             if (message){
                 const groups = await browser.storage.session.get();
-                if (setGroups !== undefined){
-                    setGroups(groups);
-                }
+                updateGroups(groups);
             } else {
                 renameValue = props.groupName;
                 console.error("error");

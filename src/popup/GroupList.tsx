@@ -7,7 +7,12 @@ import AddGroup from "./AddGroup/AddGroup";
 import Tooltips from "./Tooltips";
 import { DarkModeContext } from "./App";
 
-export const UpdateGroupsContext = createContext<React.Dispatch<React.SetStateAction<TabGroups>> | undefined>(undefined);
+export const UpdateGroupsContext = createContext<{
+  updateGroups: React.Dispatch<React.SetStateAction<TabGroups>>;
+  groups: TabGroups;
+}>({updateGroups: () => {}, groups: {},});
+
+/* export const UpdateGroupsContext = createContext<React.Dispatch<React.SetStateAction<TabGroups>> | undefined>(undefined); */
 
 const GroupList = () => {
   //console.log("in grouplist")
@@ -30,36 +35,20 @@ const GroupList = () => {
   }, []);
 
 
-  const dropHandler = (tabs: browser.tabs.Tab[], groupName: string) => {
-    // Fetch the current groups
-    console.log("in drop handler");
-    console.log(tabs);
-    console.log(groupName);
-    let tabIds = tabs.map((tab) => tab.id);
-    browser.storage.session.get().then((storedGroups) => {
-      const updatedGroups = { ...storedGroups };
-      console.log(updatedGroups);
+  const dropHandler =  async (tabs: browser.tabs.Tab[], groupName: string) => {
 
-      // Remove the tabs from the old group
-      for (let group of Object.keys(updatedGroups)) {
-        updatedGroups[group] = updatedGroups[group].filter((tab: browser.tabs.Tab) => !tabIds.includes(tab.id));
-      }
-  
-      // Add tab to the new group
-      console.log(updatedGroups[groupName]);
-      /* if (updatedGroups[groupName] === undefined) {
-        updatedGroups[groupName] = [];
-      } */
-      updatedGroups[groupName] = [...updatedGroups[groupName], ...tabs];
-  
-      // Update the state and storage
-      
-      browser.storage.session.set(updatedGroups).then(
-        () => console.log("Set Tab: " + tabs + " to group " + groupName),
-        (error) => console.log("Error while setting TabID: " + tabs + " to group " + groupName, error)
-      );
-      setGroups(updatedGroups);
+    let message = await browser.runtime.sendMessage({
+      type: "change-tab-group",
+      tabs: tabs,
+      groupName: groupName,
     });
+
+    if (message){
+      const groups = await browser.storage.session.get();
+      setGroups(groups);
+    }else{
+      console.error("error");
+    }
   };
 
   const addGroup = (newGroup: string) => {
@@ -84,7 +73,7 @@ const GroupList = () => {
   return (
     <div className={`group-list-container ${darkMode.darkMode ? "dark-mode" : "light-mode"}`}>
       <DndProvider backend={HTML5Backend}>
-        <UpdateGroupsContext.Provider value={setGroups}>
+        <UpdateGroupsContext.Provider value={{updateGroups: setGroups, groups:groups}}>
           {Object.keys(groups).map((groupName) => {
             return (
               <TabGroupEntry groupName={groupName} tabs={groups[groupName]} dropHandler={dropHandler} />

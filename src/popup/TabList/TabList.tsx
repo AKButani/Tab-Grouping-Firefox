@@ -3,7 +3,10 @@ import { ItemTypes } from '../types';
 import "./TabList.css"
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSquare, faSquareCheck } from '@fortawesome/free-solid-svg-icons';
+import { faSquare } from '@fortawesome/free-regular-svg-icons';
+import { faSquareCheck } from '@fortawesome/free-solid-svg-icons';
+import { TabOptionsMenu } from '../TabOptionsMenu';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 export const TabList = (props: { tabs: browser.tabs.Tab[]; }) => {
     
@@ -91,11 +94,12 @@ export const DraggableTabEntry = (props: { tab: browser.tabs.Tab; setSelectedTab
     };
 
     return (
-        <div ref={drag} className="tab-entry" style={{ opacity: isDragging ? 0.5 : 1 }}>
-            <FontAwesomeIcon icon={isChecked ? faSquareCheck : faSquare} onClick={handleCheckboxChange} style={{cursor: 'pointer'}}/>
-            <div onClick={focusOnTab}>
+        <div ref={drag} className="tab-entry" style={{ opacity: isDragging ? 0.5 : 1, maxWidth: '400px' }}>
+            <FontAwesomeIcon icon={isChecked ? faSquareCheck : (faSquare as IconProp)} onClick={handleCheckboxChange} style={{cursor: 'pointer'}}/>
+            <div onClick={focusOnTab} style={{flexGrow: 1}}>
                 {props.tab.title}
             </div>
+            <TabOptionsMenu currentTab={props.tab} selectedTabs={props.selectedTabs}/>
         </div>
     );
 };

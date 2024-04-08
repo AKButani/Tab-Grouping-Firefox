@@ -11,7 +11,7 @@ import { UpdateGroupsContext } from "../GroupList";
 export const RemoveGroup = (props: {tabs: browser.tabs.Tab[], groupName: string}) => {
     /* const buttonRef = useRef(null); */
     const [dialogVisible, setDialogVisible] = useState(false);
-    const setGroups = useContext(UpdateGroupsContext);
+    const setGroups = useContext(UpdateGroupsContext).updateGroups;
 
     const accept = async () => {
         let tabIds = props.tabs.map((tab) => tab.id);
