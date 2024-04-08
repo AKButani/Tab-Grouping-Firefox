@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import "./TabGroupEntry.css"
 import { GroupHeader } from '../GroupHeader/GroupHeader';
-import { TabList } from '../TabList';
+import { TabList } from '../TabList/TabList';
 import { DarkModeContext } from '../App';
 
 

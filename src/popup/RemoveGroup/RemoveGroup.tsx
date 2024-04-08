@@ -6,7 +6,7 @@ import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 /* import 'primeicons/primeicons.css'; */
 import React, { useContext, useState } from "react";
-import { UpdateGroupsContext } from "./GroupList";
+import { UpdateGroupsContext } from "../GroupList";
 
 export const RemoveGroup = (props: {tabs: browser.tabs.Tab[], groupName: string}) => {
     /* const buttonRef = useRef(null); */

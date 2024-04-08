@@ -6,7 +6,7 @@ import "./GroupHeader.css"
 import { Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark, faPenToSquare, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { RemoveGroup } from '../RemoveGroup';
+import { RemoveGroup } from '../RemoveGroup/RemoveGroup';
 import { DarkModeContext } from '../App';
 import { UpdateGroupsContext } from '../GroupList';
 
