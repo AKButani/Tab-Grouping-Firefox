@@ -99,7 +99,7 @@ export const DraggableTabEntry = (props: { tab: browser.tabs.Tab; setSelectedTab
             <div onClick={focusOnTab} style={{flexGrow: 1}}>
                 {props.tab.title}
             </div>
-            <TabOptionsMenu currentTab={props.tab} selectedTabs={props.selectedTabs}/>
+            <TabOptionsMenu currentTab={props.tab} selectedTabs={props.selectedTabs} setSelectedTabs={props.setSelectedTabs}/>
         </div>
     );
 };

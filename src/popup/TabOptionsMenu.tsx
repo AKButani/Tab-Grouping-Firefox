@@ -9,7 +9,7 @@ import { FontAwesomeIcon  } from '@fortawesome/react-fontawesome';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { DarkModeContext } from './App';
 
-export const TabOptionsMenu = (props: {currentTab: browser.tabs.Tab, selectedTabs: browser.tabs.Tab[]}) => {
+export const TabOptionsMenu = (props: {currentTab: browser.tabs.Tab, selectedTabs: browser.tabs.Tab[], setSelectedTabs: React.Dispatch<React.SetStateAction<browser.tabs.Tab[]>>}) => {
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -40,6 +40,7 @@ export const TabOptionsMenu = (props: {currentTab: browser.tabs.Tab, selectedTab
             console.error("error");
         }
         handleClose();
+        props.setSelectedTabs([]);
     }
 
     
@@ -92,7 +93,6 @@ export const TabOptionsMenu = (props: {currentTab: browser.tabs.Tab, selectedTab
                             horizontal: 'right',
                         },
                         
-
                     }}
                     
                 >
