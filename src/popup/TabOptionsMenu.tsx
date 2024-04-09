@@ -3,7 +3,6 @@ import { useContext, useState } from 'react';
 import { UpdateGroupsContext } from './GroupList';
 import IconButton from '@mui/material/IconButton';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Menu, MenuItem } from '@mui/material';
 import { FontAwesomeIcon  } from '@fortawesome/react-fontawesome';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
@@ -43,6 +42,20 @@ export const TabOptionsMenu = (props: {currentTab: browser.tabs.Tab, selectedTab
         props.setSelectedTabs([]);
     }
 
+    const closeTabs = async (tabIds: number[]) => {
+        let message = await browser.runtime.sendMessage({
+            type: "close-tabs",
+            tabIds: tabIds,
+        });
+        if (message) {
+            const groups = await browser.storage.session.get();
+            setGroups(groups);
+        } else {
+            console.error("error");
+        }
+        handleClose();
+    }
+
     
     let groupNames: string[];
     if (groups !== undefined) {
@@ -79,6 +92,9 @@ export const TabOptionsMenu = (props: {currentTab: browser.tabs.Tab, selectedTab
                 }}
                 /* style={{height: '20px'}} */
             >
+                <MenuItem onClick={() => closeTabs([props.currentTab.id as number])}>
+                    Close Tab
+                </MenuItem>
                 <NestedMenuItem 
                     parentMenuOpen={open}
                     label="Move to Group"

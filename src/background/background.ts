@@ -62,9 +62,9 @@ browser.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
                 await browser.storage.session.set({ "Unassigned": [] });
             }
             
-            let storage = await browser.storage.session.get();
+            /* let storage = await browser.storage.session.get();
             console.log("storage after removing key");
-            console.log(storage);
+            console.log(storage); */
             await browser.tabs.remove(msg.tabIds);
 
         } catch (error) {
@@ -111,6 +111,21 @@ browser.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
             updatedGroups[msg.groupName] = [...updatedGroups[msg.groupName], ...msg.tabs];
             await browser.storage.session.set(updatedGroups);
 
+        } catch (error){
+            console.error(error);
+            return false;
+        }
+        return true;
+    } else if (msg.type === "close-tabs"){
+        try {
+            let storage = await browser.storage.session.get();
+            let updatedGroups = { ...storage };
+            for (let group of Object.keys(updatedGroups)) {
+                updatedGroups[group] = updatedGroups[group].filter((tab: browser.tabs.Tab) => !msg.tabIds.includes(tab.id));
+            }
+            await browser.storage.session.set(updatedGroups);
+            await browser.tabs.remove(msg.tabIds);
+            
         } catch (error){
             console.error(error);
             return false;
