@@ -51,14 +51,24 @@ const GroupList = () => {
     }
   };
 
-  const addGroup = (newGroup: string) => {
+  const addGroup = async (newGroup: string) => {
     console.log("in addGroup")
     if (newGroup === "" || Object.keys(groups).includes(newGroup)) {
       return;
     }
 
+    let message = await browser.runtime.sendMessage({
+      type: "add-group",
+      groupName: newGroup,
+    });
+    if (message) {
+      const groups = await browser.storage.session.get();
+      setGroups(groups);
+    } else {
+      console.error("error");
+    }
     
-    const updatedGroups = { ...groups };
+    /* const updatedGroups = { ...groups };
     updatedGroups[newGroup] = [];
     console.log(updatedGroups);
     browser.storage.session.set(updatedGroups).then(
@@ -66,7 +76,8 @@ const GroupList = () => {
       (error) => console.log("Error while adding group " + newGroup, error)
     );
 
-    setGroups(updatedGroups);
+    setGroups(updatedGroups); */
+
   };
 
 

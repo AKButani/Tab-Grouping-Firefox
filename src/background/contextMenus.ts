@@ -1,4 +1,4 @@
-import { recursiveOpener, handleRepitition, addTabstoGroup, getAllurls } from "./helperfunctions";
+import { recursiveOpener, handleRepitition, addTabstoGroup, getAllurls, moveTabs } from "./helperfunctions";
 import { addTab } from "./tabEvents";
 
 //Creates the right-click options
@@ -16,17 +16,56 @@ export function createContextMenus() {
         contexts: ["bookmark"],
         title: "Open Bookmark in New Window",
     });
+
+    browser.contextMenus.create({
+        id: "ADD_TO_GROUP",
+        contexts: ["tab"],
+        title: "Move to Group",
+        
+    });
 }
 
 
-export async function handleContextMenuClicks(info: browser.contextMenus.OnClickData) {
+export async function handleContextMenuClicks(info: browser.contextMenus.OnClickData, tab?: browser.tabs.Tab) {
     if (info.menuItemId === "OPEN_BOOKMARK_SAME_WINDOW") {
         await openBookmarks(info, true);
-
     } else if (info.menuItemId === "OPEN_BOOKMARK_NEW_WINDOW") {
         await openBookmarks(info, false);
+    } else if (typeof info.menuItemId === "string" && info.menuItemId.includes("ADD_TO_GROUP")) {
+        moveTabsContextMenu(info.menuItemId.slice(13), tab!);
     }
 }
+
+export const handleStorageChangeForContextMenu = async (changes: {[key: string]: browser.storage.StorageChange;}) => {
+    //check if a key has been added or removed
+    for (let key in changes) {
+        if (changes[key].newValue === null || changes[key].newValue === undefined) {
+            //key has been removed
+            console.log("removing context menu " + key);
+            try{
+                await browser.contextMenus.remove(`ADD_TO_GROUP_${key}`);
+            } catch (error) {
+                console.error(error);
+            }
+            
+        } else if (changes[key].oldValue === null || changes[key].oldValue === undefined) {
+            //key has been added
+            console.log("adding context menu " + key);
+            try{
+                browser.contextMenus.create({
+                    parentId: "ADD_TO_GROUP",
+                    id: `ADD_TO_GROUP_${key}`,
+                    contexts: ["tab"],
+                    title: key,
+                });
+            } catch (error) {
+                console.error(error);
+            }
+            
+        }
+    }
+}
+
 
 /* 
     @param info: browser.contextMenus.OnClickData - contains the bookmarkId of the bookmark clicked
@@ -84,5 +123,16 @@ async function openBookmarks(info: browser.contextMenus.OnClickData, sameWindow:
 
 }
 
-
+async function moveTabsContextMenu(groupName: string, tab: browser.tabs.Tab){
+    let highlightedTabs = await browser.tabs.query({ highlighted: true });
+    console.log(highlightedTabs);
+    let tabsToMove = [];
+    if (highlightedTabs.map((tabs) => tabs.id).includes(tab.id)){
+        tabsToMove = highlightedTabs;
+    }else {
+        tabsToMove = [tab];
+    }
+    console.log(tabsToMove);
+    await moveTabs(tabsToMove, groupName); 
+}
 

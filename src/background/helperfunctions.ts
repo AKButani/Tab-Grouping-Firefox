@@ -18,20 +18,24 @@ export async function addTabstoGroup(tabIds: (number | undefined)[], uniqueGroup
     await browser.storage.session.set(storage);
 
 }
-/* async function moveTabs(tabIds: (number | undefined)[], uniqueGroupName: string, storage: { [key: string]: any; }) {
-    storage['Unassigned'].filter((tab: browser.tabs.Tab) => tabIds.includes(tab.id));
-    let tabList = [];
 
-    for (let tabId of tabIds) {
-        if (typeof tabId === "number") {
-            let tab = await browser.tabs.get(tabId);
-            tabList.push(tab);
-        }
+/* 
+    @param tabs: browser.tabs.Tab[] - list of tabs to be moved
+    @param groupName: string - the name of the group
+    Moves the tabs to the group
+*/
+export async function moveTabs(tabs: browser.tabs.Tab[], groupName: string) {
+    let storedGroups = await browser.storage.session.get();
+    const updatedGroups = { ...storedGroups };
+    let tabIds = tabs.map((tab: browser.tabs.Tab) => tab.id);
+    
+    // Remove the tabs from their current groups
+    for (let group of Object.keys(updatedGroups)) {
+        updatedGroups[group] = updatedGroups[group].filter((tab: browser.tabs.Tab) => !tabIds.includes(tab.id));
     }
-    storage[uniqueGroupName] = tabList;
-
-    await browser.storage.session.set(storage);
-} */
+    updatedGroups[groupName] = [...updatedGroups[groupName], ...tabs];
+    await browser.storage.session.set(updatedGroups);
+}
 /*
     @param groupName: string - the name of the group
     @param storage: { [key: string]: any; } - the browser storage object

@@ -1,14 +1,16 @@
-import { handleContextMenuClicks } from "./contextMenus";
-import { handleRepitition } from "./helperfunctions";
+import { handleContextMenuClicks, handleStorageChangeForContextMenu } from "./contextMenus";
+import { handleRepitition, moveTabs } from "./helperfunctions";
 import { init } from "./init";
 import { addTab, onCloseWindow, removeTab, updateTab } from "./tabEvents";
 
 export {}
+console.log("background running");
 
 browser.runtime.onStartup.addListener(init);
 browser.runtime.onInstalled.addListener(init);
 
 browser.contextMenus.onClicked.addListener(handleContextMenuClicks)
+browser.storage.session.onChanged.addListener(handleStorageChangeForContextMenu);
 
 browser.tabs.onCreated.addListener(addTab);
 browser.tabs.onRemoved.addListener(removeTab);
@@ -102,15 +104,7 @@ browser.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
     } else if (msg.type === "change-tab-group"){
         try{
             //args: tabs, groupname
-            let storedGroups = await browser.storage.session.get();
-            const updatedGroups = { ...storedGroups };
-            let tabIds = msg.tabs.map((tab: browser.tabs.Tab) => tab.id);
-            for (let group of Object.keys(updatedGroups)) {
-                updatedGroups[group] = updatedGroups[group].filter((tab: browser.tabs.Tab) => !tabIds.includes(tab.id));
-            }
-            updatedGroups[msg.groupName] = [...updatedGroups[msg.groupName], ...msg.tabs];
-            await browser.storage.session.set(updatedGroups);
-
+            await moveTabs(msg.tabs, msg.groupName);
         } catch (error){
             console.error(error);
             return false;
@@ -126,6 +120,19 @@ browser.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
             await browser.storage.session.set(updatedGroups);
             await browser.tabs.remove(msg.tabIds);
             
+        } catch (error){
+            console.error(error);
+            return false;
+        }
+        return true;
+    } else if (msg.type === "add-group"){
+        try {
+            console.log("add a group")
+            let storage = await browser.storage.session.get();
+            let updatedGroups = { ...storage };
+            updatedGroups[msg.groupName] = [];
+
+            await browser.storage.session.set(updatedGroups);
         } catch (error){
             console.error(error);
             return false;

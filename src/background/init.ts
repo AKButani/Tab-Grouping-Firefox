@@ -1,14 +1,14 @@
 import { createContextMenus } from "./contextMenus";
 
 export async function init() {
-    console.log("background running");
+    createContextMenus();
     try {
         await initGroups();
         console.log("initialised groups");
     } catch (e) {
         console.log("Error: " + e);
     }
-    createContextMenus();
+    
 
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         let mode = "dark";
