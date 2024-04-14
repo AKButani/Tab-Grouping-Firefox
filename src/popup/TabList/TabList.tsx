@@ -95,7 +95,7 @@ export const DraggableTabEntry = (props: { tab: browser.tabs.Tab; setSelectedTab
 
     return (
         <div ref={drag} className="tab-entry" style={{ opacity: isDragging ? 0.5 : 1, maxWidth: '400px' }}>
-            <FontAwesomeIcon icon={isChecked ? faSquareCheck : (faSquare as IconProp)} onClick={handleCheckboxChange} style={{cursor: 'pointer'}}/>
+            <FontAwesomeIcon icon={isChecked ? faSquareCheck : (faSquare as IconProp)} size='lg' onClick={handleCheckboxChange} style={{cursor: 'pointer'}}/>
             <div onClick={focusOnTab} style={{flexGrow: 1}}>
                 {props.tab.title}
             </div>
