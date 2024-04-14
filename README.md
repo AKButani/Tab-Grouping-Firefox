@@ -6,7 +6,7 @@ This extension solves this exact problem!
 # Features
 
  - From the popup you can get an overview of all the open tabs organized in groups. 
-![Popup Overview](assets\popup-overview.png)
+![Popup Overview](assets/popup-overview.png)
 
  - To further organize the tabs, you can separate the group by moving them all into a new window. 
 
@@ -16,15 +16,15 @@ This extension solves this exact problem!
 
     1. Drag and Drop
 
-    ![Move Tabs via Drag and Drop](assets\move-tab-dnd.gif)
+    ![Move Tabs via Drag and Drop](assets/move-tab-dnd.gif)
 
     2. From Options
 
-    ![Move Tabs via Options](assets\move-tab-options.gif)
+    ![Move Tabs via Options](assets/move-tab-options.gif)
 
     3. From Tab Selection
 
-    ![Move Tabs via Tab Selection](assets\move-tabs-tab-selection.gif)
+    ![Move Tabs via Tab Selection](assets/move-tabs-tab-selection.gif)
 
  - You can save a group as a bookmark, which can be synchronized into multiple devices.
 
