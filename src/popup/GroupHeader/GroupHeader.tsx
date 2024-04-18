@@ -1,7 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { FaAngleRight, FaAngleDown } from "react-icons/fa";
 import "./GroupHeader.css"
-import { Alert } from 'react-bootstrap';
+/* import { Alert } from 'react-bootstrap'; */
+import { Alert } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark, faPenToSquare, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { RemoveGroup } from '../RemoveGroup/RemoveGroup';
@@ -113,7 +114,9 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
 
     return (
         <>  
-            {showAlert && <Alert dismissible variant='success' onClose={() => setAlert(false)}> Success </Alert>}
+            {showAlert && <Alert severity='success' onClose={() => setAlert(false)}>
+                Successfully saved as a bookmark
+            </Alert>}
             <div /* ref={drop} */ className='group-header'>
                 {props.isExpanded ? <FaAngleDown onClick={() => props.setIsExpanded(!props.isExpanded)} className='expand-collapse-tabs button'/> : <FaAngleRight onClick={() => props.setIsExpanded(!props.isExpanded)} className='expand-collapse-tabs button'/>}
                 {!renaming && 
