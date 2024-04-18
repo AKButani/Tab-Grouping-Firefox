@@ -21,11 +21,17 @@ export const TabOptionsMenu = (props: {currentTab: browser.tabs.Tab, selectedTab
     const groups = useContext(UpdateGroupsContext).groups;
     const setGroups = useContext(UpdateGroupsContext).updateGroups;
     
+    let selectedTabs = props.selectedTabs;
+    if (!selectedTabs.includes(props.currentTab)) {
+        selectedTabs = [...selectedTabs, props.currentTab];
+    }
+    let selectedTabIds = selectedTabs.map((tab: browser.tabs.Tab) => tab.id);
+    
     const changeGroup = async (groupName: string) => {
-        let selectedTabs = props.selectedTabs;
+        /* let selectedTabs = props.selectedTabs;
         if (!selectedTabs.includes(props.currentTab)) {
             selectedTabs = [...selectedTabs, props.currentTab];
-        }
+        } */
         
         let message = await browser.runtime.sendMessage({
             type: "change-tab-group",
@@ -42,10 +48,14 @@ export const TabOptionsMenu = (props: {currentTab: browser.tabs.Tab, selectedTab
         props.setSelectedTabs([]);
     }
 
-    const closeTabs = async (tabIds: number[]) => {
+    const closeTabs = async () => {
+        /* let selectedTabs = props.selectedTabs;
+        if (!selectedTabs.includes(props.currentTab)) {
+            selectedTabs = [...selectedTabs, props.currentTab];
+        } */
         let message = await browser.runtime.sendMessage({
             type: "close-tabs",
-            tabIds: tabIds,
+            tabIds: selectedTabIds //s.map((tab: browser.tabs.Tab) => tab.id),
         });
         if (message) {
             const groups = await browser.storage.session.get();
@@ -54,6 +64,24 @@ export const TabOptionsMenu = (props: {currentTab: browser.tabs.Tab, selectedTab
             console.error("error");
         }
         handleClose();
+        props.setSelectedTabs([]);
+    }
+
+    const moveTabsSameWindow = async (direction: "left" | "right") => {
+
+        let message = await browser.runtime.sendMessage({
+            type: "move-tabs-same-window",
+            tabIds: selectedTabIds,
+            direction: direction,
+        })
+        if (message){
+            console.log("moved tabs to left")
+        }else{
+            console.error("error")
+        }
+        
+        handleClose();
+        props.setSelectedTabs([]);
     }
 
     
@@ -92,8 +120,14 @@ export const TabOptionsMenu = (props: {currentTab: browser.tabs.Tab, selectedTab
                 }}
                 /* style={{height: '20px'}} */
             >
-                <MenuItem onClick={() => closeTabs([props.currentTab.id as number])}>
+                <MenuItem onClick={closeTabs}>
                     Close Tab
+                </MenuItem>
+                <MenuItem onClick={() => moveTabsSameWindow('left')}>
+                    Move Tabs to Left
+                </MenuItem>
+                <MenuItem onClick={() => moveTabsSameWindow('right')}>
+                    Move Tabs to Right
                 </MenuItem>
                 <NestedMenuItem 
                     parentMenuOpen={open}

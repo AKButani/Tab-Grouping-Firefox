@@ -138,5 +138,14 @@ browser.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
             return false;
         }
         return true;
+    } else if (msg.type === "move-tabs-same-window"){
+        try{
+            let index = msg.direction === 'left' ? 0 : -1
+            await browser.tabs.move(msg.tabIds, {index: index})
+        } catch (error){
+            console.error(error);
+            return false;
+        }
+        return true;
     }
 })
