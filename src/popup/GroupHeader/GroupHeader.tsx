@@ -1,6 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
-import { useDrop } from 'react-dnd';
-import { ItemTypes } from "../types";
+import React, { useContext, useState } from 'react';
 import { FaAngleRight, FaAngleDown } from "react-icons/fa";
 import "./GroupHeader.css"
 import { Alert } from 'react-bootstrap';
@@ -13,21 +11,22 @@ import { UpdateGroupsContext } from '../GroupList';
 export const GroupHeader = (props: { groupName: string; isExpanded: boolean; setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>; onDrop: (tabs: browser.tabs.Tab[], groupName: string) => void; tabs: browser.tabs.Tab[] }) => {
     //console.log(`in group header ${props.groupName}`)
     
-    const groupNameRef = useRef(props.groupName); // Initialize the ref with the initial groupName
+    /* const groupNameRef = useRef(props.groupName); // Initialize the ref with the initial groupName
 
     // Update the ref whenever the groupName prop changes
     React.useEffect(() => {
         groupNameRef.current = props.groupName;
-    }, [props.groupName]);
+    }, [props.groupName]); */
 
-    const [{ canDrop, isOver }, drop] = useDrop(() => ({
+    /* const [{ canDrop, isOver }, drop] = useDrop(() => ({
         accept: ItemTypes.tabs,
         drop: (tabs) => (props.onDrop(((tabs as { tabs: browser.tabs.Tab[]; }).tabs as browser.tabs.Tab[]), groupNameRef.current)),
         collect: (monitor) => ({
             isOver: monitor.isOver(),
             canDrop: monitor.canDrop()
         })
-    }));
+    })); */
+
     let renameValue = props.groupName;
     const [showAlert, setAlert] = useState(false);
     const [renaming, setRenaming] = useState(false);
@@ -115,7 +114,7 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
     return (
         <>  
             {showAlert && <Alert dismissible variant='success' onClose={() => setAlert(false)}> Success </Alert>}
-            <div ref={drop} className='group-header' style={{ backgroundColor: (isOver && canDrop) ? 'grey' : (!darkMode.darkMode) ? /* "#f9f9fb" */ "#ffffff": ""}}>
+            <div /* ref={drop} */ className='group-header'>
                 {props.isExpanded ? <FaAngleDown onClick={() => props.setIsExpanded(!props.isExpanded)} className='expand-collapse-tabs button'/> : <FaAngleRight onClick={() => props.setIsExpanded(!props.isExpanded)} className='expand-collapse-tabs button'/>}
                 {!renaming && 
                     (<h3 className='group-header-category'>

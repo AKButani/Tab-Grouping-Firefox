@@ -17,7 +17,7 @@
     grid-template-columns: 10% 50% 10% 10% 10% 10%;
    /*  grid-column-gap: 5px;  */
     justify-items: stretch;
-    background-color: #42414d;
+    /* background-color: #42414d; */
     border-radius: 5px;
     align-items: center;
 }
