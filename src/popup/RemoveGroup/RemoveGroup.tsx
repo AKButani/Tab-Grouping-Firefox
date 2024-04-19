@@ -94,9 +94,9 @@ export const RemoveGroup = (props: {tabs: browser.tabs.Tab[], groupName: string}
                     overflow: 'auto' // Enable scrolling if content overflows 
                 }}  */
             />
-            <div className="button-remove-group-wrapper" style={{display: "flex", justifyContent: "center"}}>
-                <FontAwesomeIcon  icon={faXmark} className='button-remove-group button' onClick={() => setDialogVisible(true)}/>
-            </div>
+            {/* <div className="button-remove-group-wrapper" style={{display: "flex", justifyContent: "center", backgroundColor: "red"}}> */}
+            <FontAwesomeIcon  icon={faXmark} className='button-remove-group button' onClick={() => setDialogVisible(true)}/>
+           {/*  </div> */}
         </>
     );
 }

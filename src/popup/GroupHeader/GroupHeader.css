@@ -14,9 +14,9 @@
 
 .group-header{
     display: grid;
-    grid-template-columns: 10% 50% 10% 10% 10% 10%;
+    grid-template-columns: 10% 40% repeat(6, 8%);
    /*  grid-column-gap: 5px;  */
-    justify-items: stretch;
+     justify-content: stretch;
     /* background-color: #42414d; */
     border-radius: 5px;
     align-items: center;
@@ -32,6 +32,7 @@
 .group-header-category{
     text-align: start;
     grid-column: 2 / 3;
+    flex-grow: 1;
     
 }
 
@@ -56,8 +57,16 @@
     background-color: grey;
 } */
 
-.button-remove-group-wrapper{
+.button-remove-group{
+    grid-column: 8 / 9;
+}
+
+.move-tabs-left{
     grid-column: 6 / 7;
+}
+
+.move-tabs-right{
+    grid-column: 7 / 8;
 }
 
 /* .button-remove-group-wrapper:hover{

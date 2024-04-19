@@ -4,7 +4,7 @@ import "./GroupHeader.css"
 /* import { Alert } from 'react-bootstrap'; */
 import { Alert } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBookmark, faPenToSquare, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faBookmark, faGreaterThan, faLessThan, faPenToSquare, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { RemoveGroup } from '../RemoveGroup/RemoveGroup';
 import { DarkModeContext } from '../App';
 import { UpdateGroupsContext } from '../GroupList';
@@ -112,6 +112,19 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
         setRenaming(false);
     }
 
+    const moveTabs = async (direction: "left" | "right") => {
+        let message = await browser.runtime.sendMessage({
+            type: "move-tabs-same-window",
+            direction: direction,
+            tabIds: props.tabs.map((tab) => tab.id)
+        });
+        if (message){
+            console.log("successfully moved Tabs")
+        } else{
+            console.error("error");
+        }
+    }
+
     return (
         <>  
             {showAlert && <Alert severity='success' onClose={() => setAlert(false)}>
@@ -145,7 +158,10 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
                 }
                 <FontAwesomeIcon icon={faPlus} className='button-open-group-new-window button' onClick={openTabsnewWindow} />
                 <FontAwesomeIcon icon={faBookmark} className='bookmark-group button' onClick={storeBookmark}/>
+                <FontAwesomeIcon icon={faLessThan} className='button move-tabs-left' onClick={() => moveTabs('left')}/>
+                <FontAwesomeIcon icon={faGreaterThan} className='button move-tabs-right' onClick={() => moveTabs('right')}/>
                 <RemoveGroup tabs={props.tabs} groupName={props.groupName}/>
+
             </div>
         </>
     );
