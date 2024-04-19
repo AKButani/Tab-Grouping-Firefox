@@ -9,7 +9,7 @@ body {
   gap: 100px;
   row-gap: 50px; */
   min-width: 400px;
-  min-height: 200px;
+  min-height: 150px; 
   background-color: #1c1b22;
   border: #1c1b22;
 }
