@@ -2,6 +2,7 @@ import { handleContextMenuClicks, handleStorageChangeForContextMenu } from "./co
 import { handleRepitition, moveTabs } from "./helperfunctions";
 import { init } from "./init";
 import { addTab, onCloseWindow, removeTab, updateTab } from "./tabEvents";
+import axios from "axios";
 
 export {}
 console.log("background running");
@@ -147,5 +148,29 @@ browser.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
             return false;
         }
         return true;
+    } else if (msg.type === "get-favicon-urls"){
+        let res: Record<number, string> = {};
+        console.log("in get-favicon-urls")
+        for (let tabId of msg.tabIds) {
+            try {
+                let tab = await browser.tabs.get(tabId);
+                if (tab.favIconUrl) {
+                   // console.log("favIconUrl is given of tab:" + tabId);
+                    //console.log(tab.favIconUrl);
+                    res[tabId] = tab.favIconUrl;
+                    continue;
+                }
+                //console.log("favIconUrl is not given of tab:" + tabId);
+                const response = await axios.get(`https://www.google.com/s2/favicons?domain=${tab.url}`);
+                res[tabId] = response.data;
+                //console.log(response);
+            } catch (error) {
+                console.log("could not find tab with id: " + tabId + " in get-favicon-urls");
+                res[tabId] = "";
+            }
+        }
+        //this is not workin
+        return res;
+        
     }
 })

@@ -37,6 +37,7 @@ export const RemoveGroup = (props: {tabs: browser.tabs.Tab[], groupName: string}
         }catch (error){
             console.error(error)
         }
+        setDialogVisible(false);
     }
 
 /*     const confirm = () => {
