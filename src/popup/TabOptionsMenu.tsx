@@ -67,7 +67,7 @@ export const TabOptionsMenu = (props: {currentTab: browser.tabs.Tab, selectedTab
         props.setSelectedTabs([]);
     }
 
-    const moveTabsSameWindow = async (direction: "left" | "right") => {
+    /* const moveTabsSameWindow = async (direction: "left" | "right") => {
 
         let message = await browser.runtime.sendMessage({
             type: "move-tabs-same-window",
@@ -82,7 +82,7 @@ export const TabOptionsMenu = (props: {currentTab: browser.tabs.Tab, selectedTab
         
         handleClose();
         props.setSelectedTabs([]);
-    }
+    } */
 
     
     let groupNames: string[];
@@ -123,12 +123,12 @@ export const TabOptionsMenu = (props: {currentTab: browser.tabs.Tab, selectedTab
                 <MenuItem onClick={closeTabs}>
                     Close Tab
                 </MenuItem>
-                <MenuItem onClick={() => moveTabsSameWindow('left')}>
+                {/* <MenuItem onClick={() => moveTabsSameWindow('left')}>
                     Move Tabs to Left
                 </MenuItem>
                 <MenuItem onClick={() => moveTabsSameWindow('right')}>
                     Move Tabs to Right
-                </MenuItem>
+                </MenuItem> */}
                 <NestedMenuItem 
                     parentMenuOpen={open}
                     label="Move to Group"
