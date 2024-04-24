@@ -130,8 +130,9 @@ browser.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
         try {
             console.log("add a group")
             let storage = await browser.storage.session.get();
+            let updatedGroupname = handleRepitition(msg.groupName, storage);
             let updatedGroups = { ...storage };
-            updatedGroups[msg.groupName] = [];
+            updatedGroups[updatedGroupname] = [];
 
             await browser.storage.session.set(updatedGroups);
         } catch (error){

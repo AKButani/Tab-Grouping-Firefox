@@ -6,6 +6,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import AddGroup from "./AddGroup/AddGroup";
 import Tooltips from "./Tooltips";
 import { DarkModeContext } from "./App";
+import { Alert } from "@mui/material";
 
 export const UpdateGroupsContext = createContext<{
   updateGroups: React.Dispatch<React.SetStateAction<TabGroups>>;
@@ -17,6 +18,7 @@ export const UpdateGroupsContext = createContext<{
 const GroupList = () => {
   //console.log("in grouplist")
   const [groups, setGroups] = useState({} as TabGroups);
+  const [showAddGroupAlert, setAddGroupAlert] = useState(false);
   const darkMode = useContext(DarkModeContext);
 
   useEffect(() => {
@@ -53,7 +55,8 @@ const GroupList = () => {
 
   const addGroup = async (newGroup: string) => {
     console.log("in addGroup")
-    if (newGroup === "" || Object.keys(groups).includes(newGroup)) {
+    if (newGroup === "") {
+      setAddGroupAlert(true);
       return;
     }
 
@@ -92,6 +95,9 @@ const GroupList = () => {
           })}
         </UpdateGroupsContext.Provider>
       </DndProvider>
+      {showAddGroupAlert && <Alert severity='error' onClose={() => setAddGroupAlert(false)}>
+        Group name cannot be empty
+      </Alert>}
       <AddGroup onClick={addGroup} />
       <Tooltips />
     </div>
