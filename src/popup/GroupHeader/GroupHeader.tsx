@@ -33,7 +33,7 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
     const [renaming, setRenaming] = useState(false);
     const {updateGroups} = useContext(UpdateGroupsContext);
     
-    //const darkMode = useContext(DarkModeContext);
+    const darkMode = useContext(DarkModeContext);
 
     /* const onOpenSuccess = async (window: browser.windows.Window, tabs: number[]) => {
         //now open other tabs in this window
@@ -143,9 +143,14 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
                             className='add-group-input'
                             type="text"
                             defaultValue={props.groupName}
-                            onChange={(e) => renameValue = e.target.value} 
+                            onChange={(e) => renameValue = e.target.value}
+                            style={{
+                                width: "100%",
+                                backgroundColor: (darkMode.darkMode) ? "#1c1b22" : "#f0f0f4",
+                                color: (darkMode.darkMode) ? "#fbfbfe" : "#15141a",
+                            }} 
                         />
-                        <button className='add-group-button' onClick={renameGroup}>
+                        <button className={`add-group-button ${(darkMode.darkMode ? 'dark-mode': 'light-mode')}`} onClick={renameGroup}>
                             Save
                         </button>
                     </div>

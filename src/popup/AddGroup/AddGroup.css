@@ -20,3 +20,10 @@
     cursor: pointer;
     background-color: grey;
 }
+
+.add-group-input{
+    border: none; 
+    font-size: 1em;
+    border-radius: 5px;
+    flex-grow: 4;
+}

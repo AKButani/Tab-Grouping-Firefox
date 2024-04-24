@@ -30,13 +30,9 @@ const AddGroup = (props: {onClick: (newGroup: string) => void}) => {
         value={currSearch}
         onKeyDown={handleKeyPress}
         style={{ 
-          width: '75%', 
-          border: 'none', 
           backgroundColor: (darkMode.darkMode) ? "#1c1b22" : "#f0f0f4", 
-          color: (darkMode.darkMode) ? "#fbfbfe" : "#15141a", 
-          fontSize: '1em',
-          borderRadius: '5px',
-          flexGrow: 4
+          color: (darkMode.darkMode) ? "#fbfbfe" : "#15141a",
+          width: "75%",
         }}
       />
       <button className={`add-group-button ${(darkMode.darkMode ? 'dark-mode': 'light-mode')}`} onClick={handleSearch}>
