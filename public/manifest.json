@@ -1,7 +1,7 @@
 {
     "description": "Allows you to group open tabs and save them for later use.",
   
-    "manifest_version": 3,
+    "manifest_version": 2,
     "name": "tab-grouping",
     "version": "1.0",
   
@@ -9,7 +9,7 @@
         "scripts": ["./static/js/background.js"]
     },
 
-    "action": {
+    "browser_action": {
         "default_icon": "beasts-32.png",
         "default_title": "Groupify",
         "default_popup": "index.html"

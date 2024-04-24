@@ -9,7 +9,7 @@ import { RemoveGroup } from '../RemoveGroup/RemoveGroup';
 import { DarkModeContext } from '../App';
 import { UpdateGroupsContext } from '../GroupList';
 
-export const GroupHeader = (props: { groupName: string; isExpanded: boolean; setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>; onDrop: (tabs: browser.tabs.Tab[], groupName: string) => void; tabs: browser.tabs.Tab[] }) => {
+export const GroupHeader = (props: { groupName: string; isExpanded: boolean; setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>; tabs: browser.tabs.Tab[] }) => {
     //console.log(`in group header ${props.groupName}`)
     
     /* const groupNameRef = useRef(props.groupName); // Initialize the ref with the initial groupName
@@ -33,7 +33,7 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
     const [renaming, setRenaming] = useState(false);
     const {updateGroups} = useContext(UpdateGroupsContext);
     
-    const darkMode = useContext(DarkModeContext);
+    //const darkMode = useContext(DarkModeContext);
 
     /* const onOpenSuccess = async (window: browser.windows.Window, tabs: number[]) => {
         //now open other tabs in this window

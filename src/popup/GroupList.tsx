@@ -37,12 +37,15 @@ const GroupList = () => {
   }, []);
 
 
-  const dropHandler =  async (tabs: browser.tabs.Tab[], groupName: string) => {
+  const dropHandler =  async (tabs: browser.tabs.Tab[], newGroupName: string, prevGroupName: string) => {
+    if (newGroupName === prevGroupName) {
+      return;
+    }
 
     let message = await browser.runtime.sendMessage({
       type: "change-tab-group",
       tabs: tabs,
-      groupName: groupName,
+      groupName: newGroupName,
     });
 
     if (message){

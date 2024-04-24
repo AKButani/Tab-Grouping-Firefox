@@ -7,7 +7,7 @@ import { useDrop } from 'react-dnd';
 import { ItemTypes } from '../types';
 
 
-const TabGroupEntry = (props: {groupName: string, tabs: browser.tabs.Tab[], dropHandler: (tabs: browser.tabs.Tab[], groupName: string ) => void}) => {
+const TabGroupEntry = (props: {groupName: string, tabs: browser.tabs.Tab[], dropHandler: (tabs: browser.tabs.Tab[], newGroupName: string, prevGroupName: string ) => void}) => {
     //console.log("in " + props.groupName + " group entry")
     const [isExpanded, setIsExpanded] = useState(false);
     const darkMode = useContext(DarkModeContext);
@@ -22,7 +22,7 @@ const TabGroupEntry = (props: {groupName: string, tabs: browser.tabs.Tab[], drop
 
     const [{ canDrop, isOver }, drop] = useDrop(() => ({
         accept: ItemTypes.tabs,
-        drop: (tabs) => (props.dropHandler(((tabs as { tabs: browser.tabs.Tab[]; }).tabs as browser.tabs.Tab[]), groupNameRef.current)),
+        drop: (tabs) => (props.dropHandler(((tabs as { tabs: browser.tabs.Tab[]; }).tabs as browser.tabs.Tab[]), groupNameRef.current, props.groupName)),
         collect: (monitor) => ({
             isOver: monitor.isOver(),
             canDrop: monitor.canDrop()
@@ -31,7 +31,7 @@ const TabGroupEntry = (props: {groupName: string, tabs: browser.tabs.Tab[], drop
 
     return (
         <div ref={drop} style={{ backgroundColor: (isOver && canDrop) ? 'grey' : (!darkMode.darkMode) ? /* "#f9f9fb" */ "#ffffff": "#42414d", borderRadius: '5px'}} /* style={{backgroundColor: (darkMode.darkMode) ? "#42414d" : "#ffffff", borderRadius: "5px"}} */>
-            <GroupHeader groupName={props.groupName} onDrop={props.dropHandler} isExpanded={isExpanded} setIsExpanded={setIsExpanded} tabs={props.tabs} />
+            <GroupHeader groupName={props.groupName} isExpanded={isExpanded} setIsExpanded={setIsExpanded} tabs={props.tabs} />
             {isExpanded && <TabList tabs={props.tabs} />}
         </div>
     );
