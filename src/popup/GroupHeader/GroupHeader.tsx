@@ -8,8 +8,9 @@ import { faBookmark, faGreaterThan, faLessThan, faPenToSquare, faPlus } from '@f
 import { RemoveGroup } from '../RemoveGroup/RemoveGroup';
 import { DarkModeContext } from '../App';
 import { UpdateGroupsContext } from '../GroupList';
+import { GroupContext } from '../TabGroupEntry/TabGroupEntry';
 
-export const GroupHeader = (props: { groupName: string; isExpanded: boolean; setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>; tabs: browser.tabs.Tab[] }) => {
+export const GroupHeader = (props: {isExpanded: boolean; setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>;}) => {
     //console.log(`in group header ${props.groupName}`)
     
     /* const groupNameRef = useRef(props.groupName); // Initialize the ref with the initial groupName
@@ -28,7 +29,10 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
         })
     })); */
 
-    let renameValue = props.groupName;
+    let groupName = useContext(GroupContext).groupName;
+    let tabs = useContext(GroupContext).tabs;   
+
+    let renameValue = groupName;
     const [showAlert, setAlert] = useState(false);
     const [renaming, setRenaming] = useState(false);
     const {updateGroups} = useContext(UpdateGroupsContext);
@@ -43,7 +47,7 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
     } */
 
     const openTabsnewWindow = () => {
-        let tabIds = props.tabs.map((tab) => tab.id);
+        let tabIds = tabs.map((tab) => tab.id);
 
         //tells background to create new window
         browser.runtime.sendMessage({
@@ -70,8 +74,8 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
         try {
             let message = await browser.runtime.sendMessage({
                 type: "store-as-bookmark",
-                title: props.groupName,
-                tabs: props.tabs,
+                title: groupName,
+                tabs: tabs,
             });
             if (message){
                 setAlert(true);
@@ -85,8 +89,8 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
     }
 
     const renameGroup = async () => {
-        if (renameValue === "" || renameValue === props.groupName){
-            renameValue = props.groupName;
+        if (renameValue === "" || renameValue === groupName){
+            renameValue = groupName;
             setRenaming(false);
             return;
         }
@@ -94,14 +98,15 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
         try{
             let message = await browser.runtime.sendMessage({
                 type: "rename-group",
-                oldName: props.groupName,
+                oldName: groupName,
                 newName: renameValue,
             });
             if (message){
                 const groups = await browser.storage.session.get();
+                //renames the group
                 updateGroups(groups);
             } else {
-                renameValue = props.groupName;
+                renameValue = groupName;
                 console.error("error");
             }
         }catch(error){
@@ -116,7 +121,7 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
         let message = await browser.runtime.sendMessage({
             type: "move-tabs-same-window",
             direction: direction,
-            tabIds: props.tabs.map((tab) => tab.id)
+            tabIds: tabs.map((tab) => tab.id)
         });
         if (message){
             console.log("successfully moved Tabs")
@@ -134,7 +139,7 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
                 {props.isExpanded ? <FaAngleDown onClick={() => props.setIsExpanded(!props.isExpanded)} className='expand-collapse-tabs button'/> : <FaAngleRight onClick={() => props.setIsExpanded(!props.isExpanded)} className='expand-collapse-tabs button'/>}
                 {!renaming && 
                     (<h3 className='group-header-category'>
-                        {props.groupName}
+                        {groupName}
                     </h3>)
                 }
                 {renaming && (
@@ -142,7 +147,7 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
                         <input 
                             className='add-group-input'
                             type="text"
-                            defaultValue={props.groupName}
+                            defaultValue={groupName}
                             onChange={(e) => renameValue = e.target.value}
                             style={{
                                 width: "100%",
@@ -158,14 +163,14 @@ export const GroupHeader = (props: { groupName: string; isExpanded: boolean; set
                 )}
                 
                 {
-                    !renaming && props.groupName !== "Unassigned" &&
+                    !renaming && groupName !== "Unassigned" &&
                     <FontAwesomeIcon icon={faPenToSquare} className='rename-group button' onClick={() => setRenaming(true)}/>
                 }
                 <FontAwesomeIcon icon={faPlus} className='button-open-group-new-window button' onClick={openTabsnewWindow} />
                 <FontAwesomeIcon icon={faBookmark} className='bookmark-group button' onClick={storeBookmark}/>
                 <FontAwesomeIcon icon={faLessThan} className='button move-tabs-left' onClick={() => moveTabs('left')}/>
                 <FontAwesomeIcon icon={faGreaterThan} className='button move-tabs-right' onClick={() => moveTabs('right')}/>
-                <RemoveGroup tabs={props.tabs} groupName={props.groupName}/>
+                <RemoveGroup tabs={tabs} groupName={groupName}/>
 
             </div>
         </>

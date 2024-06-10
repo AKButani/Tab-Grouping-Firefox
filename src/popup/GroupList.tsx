@@ -38,7 +38,11 @@ const GroupList = () => {
 
 
   const dropHandler =  async (tabs: browser.tabs.Tab[], newGroupName: string, prevGroupName: string) => {
+    console.log("in dropHandler");
+    console.log(newGroupName);
+    console.log(prevGroupName);
     if (newGroupName === prevGroupName) {
+      console.log("same group");
       return;
     }
 

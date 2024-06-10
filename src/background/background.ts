@@ -105,6 +105,7 @@ browser.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
     } else if (msg.type === "change-tab-group"){
         try{
             //args: tabs, groupname
+            console.log("changing tab group");
             await moveTabs(msg.tabs, msg.groupName);
         } catch (error){
             console.error(error);
@@ -151,7 +152,7 @@ browser.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
         return true;
     } else if (msg.type === "get-favicon-urls"){
         let res: Record<number, string> = {};
-        console.log("in get-favicon-urls")
+        //console.log("in get-favicon-urls")
         for (let tabId of msg.tabIds) {
             try {
                 let tab = await browser.tabs.get(tabId);

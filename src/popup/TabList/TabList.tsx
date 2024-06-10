@@ -1,30 +1,39 @@
 import { useDrag } from 'react-dnd';
-import { ItemTypes } from '../types';
+import { DraggableTabProps, ItemTypes } from '../types';
 import "./TabList.css"
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSquare } from '@fortawesome/free-regular-svg-icons';
 import { faSquareCheck } from '@fortawesome/free-solid-svg-icons';
 import { TabOptionsMenu } from '../TabOptionsMenu';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import ContentLoader from 'react-content-loader';
+import { GroupContext } from '../TabGroupEntry/TabGroupEntry';
 
-export const TabList = (props: { tabs: browser.tabs.Tab[]; }) => {
+export const TabList = () => {
     
+    let tabs = useContext(GroupContext).tabs;
+    //state to keep track of selected tabs
     const [selectedTabs, setSelectedTabs] = useState<browser.tabs.Tab[]>([]);
 
+    //record of tab id to favicon url
     const [faviconUrls, setFaviconUrls] = useState<Record<number, string>>({});
+    //state to keep track of whether favicons are loading
     const [loadingFavicons, setLoadingFavicons] = useState<boolean>(true);
 
     useEffect(() => {
         // Function to send a message to the background script
-        const sendMessageToBackground = async () => {
-            setLoadingFavicons(true);
-            console.log("Sending message to background script");
+        console.log("update favicons")
+        const updateFavicons = async () => {
+            
+            if (Object.keys(faviconUrls).length === 0){
+                setLoadingFavicons(true);
+            }
+            //console.log("Sending message to background script");
             // Send a message to the background script requesting the favicon URLs
             let message = await browser.runtime.sendMessage({
                 type: "get-favicon-urls",
-                tabIds: props.tabs.map((tab) => tab.id),
+                tabIds: tabs.map((tab) => tab.id),
             });
             //console.log(message);
             if (message) {
@@ -33,8 +42,8 @@ export const TabList = (props: { tabs: browser.tabs.Tab[]; }) => {
             }
         }
         // Run the function to send a message to the background script
-        sendMessageToBackground();
-    }, [props.tabs]);
+        updateFavicons();
+    }, [tabs]);
 
 /*     const addTabtoSelected = (tab: browser.tabs.Tab) => {
         setSelectedTabs([...selectedTabs, tab]);
@@ -48,9 +57,16 @@ export const TabList = (props: { tabs: browser.tabs.Tab[]; }) => {
     
     //console.log(faviconUrls);
 
+    const tabSortFunction = (a: browser.tabs.Tab, b: browser.tabs.Tab) => {
+        if (a.title && b.title){
+            return a.title.localeCompare(b.title);
+        }
+        return 0;
+    }
+
     return (
         <div className='tabs-list'>
-            {props.tabs.map((tab) => {
+            {tabs.sort(tabSortFunction).map((tab) => {
                 return (
                     <DraggableTabEntry tab={tab} setSelectedTabs={setSelectedTabs} selectedTabs={selectedTabs} favicon={faviconUrls[tab.id!]} loadingFavicon={loadingFavicons}/>
                 );
@@ -62,7 +78,11 @@ export const TabList = (props: { tabs: browser.tabs.Tab[]; }) => {
 export const DraggableTabEntry = (props: { tab: browser.tabs.Tab; setSelectedTabs: React.Dispatch<React.SetStateAction<browser.tabs.Tab[]>>, selectedTabs: browser.tabs.Tab[], favicon: string, loadingFavicon: boolean}) => {
    
     const [isChecked, setIsChecked] = useState(false);
-    console.log(props.loadingFavicon);
+    const groupName = useContext(GroupContext).groupName; 
+
+
+    
+    //console.log(props.loadingFavicon);
     useEffect(() => {
         setIsChecked(props.selectedTabs.includes(props.tab));
     }, [props.selectedTabs, props.tab]);
@@ -89,7 +109,7 @@ export const DraggableTabEntry = (props: { tab: browser.tabs.Tab; setSelectedTab
     const [{ isDragging }, drag] = useDrag({
         type: ItemTypes.tabs,
         item: () => {
-            let dragFields;
+            let dragFields: browser.tabs.Tab[];
             //If for Drag multiple Elemets
             if (props.selectedTabs.length > 0) {
                 if (!props.selectedTabs.includes(props.tab)){
@@ -100,7 +120,7 @@ export const DraggableTabEntry = (props: { tab: browser.tabs.Tab; setSelectedTab
             } else { //Else for Drag one element
                 dragFields = [props.tab];
             }
-            return { tabs: dragFields };
+            return { tabs: dragFields, groupName: groupName } as DraggableTabProps;
         },
         collect: (monitor) => ({
             isDragging: monitor.isDragging()
