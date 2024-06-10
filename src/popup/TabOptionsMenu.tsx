@@ -7,6 +7,7 @@ import { Menu, MenuItem } from '@mui/material';
 import { FontAwesomeIcon  } from '@fortawesome/react-fontawesome';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { DarkModeContext } from './App';
+import { GroupContext } from './TabGroupEntry/TabGroupEntry';
 
 export const TabOptionsMenu = (props: {currentTab: browser.tabs.Tab, selectedTabs: browser.tabs.Tab[], setSelectedTabs: React.Dispatch<React.SetStateAction<browser.tabs.Tab[]>>}) => {
 
@@ -26,12 +27,14 @@ export const TabOptionsMenu = (props: {currentTab: browser.tabs.Tab, selectedTab
         selectedTabs = [...selectedTabs, props.currentTab];
     }
     let selectedTabIds = selectedTabs.map((tab: browser.tabs.Tab) => tab.id);
+    const prevGroupName = useContext(GroupContext).groupName;
     
     const changeGroup = async (groupName: string) => {
         /* let selectedTabs = props.selectedTabs;
         if (!selectedTabs.includes(props.currentTab)) {
             selectedTabs = [...selectedTabs, props.currentTab];
         } */
+
         
         let message = await browser.runtime.sendMessage({
             type: "change-tab-group",
@@ -147,7 +150,7 @@ export const TabOptionsMenu = (props: {currentTab: browser.tabs.Tab, selectedTab
                     
                 >
                     {groupNames.map((groupName) => (
-                        <MenuItem key={groupName} onClick={async () => await changeGroup(groupName)} style={{fontSize: '12px', height: '10px'}} dense={true}>
+                        groupName !== prevGroupName && <MenuItem key={groupName} onClick={async () => await changeGroup(groupName)} style={{fontSize: '12px', height: '10px'}} dense={true}>
                             {groupName}
                         </MenuItem>
                     ))}
