@@ -39,6 +39,14 @@ const Tooltips = () => {
                 selector=".rename-group"
                 content="Rename Group"
             />
+            <MyTooltip 
+                selector=".move-tabs-left"
+                content="Move Tabs to left of window"
+            />
+            <MyTooltip 
+                selector=".move-tabs-right"
+                content="Move Tabs to right of window"
+            />
         </>
     );
 }

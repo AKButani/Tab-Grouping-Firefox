@@ -141,28 +141,28 @@ export const DraggableTabEntry = (props: { tab: browser.tabs.Tab; setSelectedTab
 
     return (
         <div ref={drag} className="tab-entry" style={{ opacity: isDragging ? 0.5 : 1, maxWidth: '400px' }}>
-            <FontAwesomeIcon icon={isChecked ? faSquareCheck : (faSquare as IconProp)} size='lg' onClick={handleCheckboxChange} style={{cursor: 'pointer'}}/>
-            <div onClick={focusOnTab} style={{flexGrow: 1, display:'flex', alignItems: 'center', columnGap: '5px'}}>
-            { props.loadingFavicon ?
-                <ContentLoader
-                    animate={true}
-                    speed={2}
-                    width={17}
-                    height={17}
-                    viewBox="0 0 17 17"
-                    backgroundColor='#fbfbfe'
-                    foregroundColor='#15141a'     
-                >
-                    <rect x="0" y="0" rx="5" ry="5" width="17" height="17" />
-                </ContentLoader>
-             : null}
-                    
-                {props.favicon ? <img src={props.favicon} alt='tab icon' style={{height: '17px', width: '17px', borderRadius: '5px', alignSelf: "center"}}/> : null}
-                
+            <FontAwesomeIcon icon={isChecked ? faSquareCheck : (faSquare as IconProp)} size='lg' onClick={handleCheckboxChange} style={{ margin: '5px 0px 5px 5px', cursor: 'pointer' }} />
+            <div onClick={focusOnTab} style={{ flexGrow: 1, display: 'flex', alignItems: 'center', columnGap: '5px' }}>
+                {props.loadingFavicon ?
+                    <ContentLoader
+                        animate={true}
+                        speed={2}
+                        width={17}
+                        height={17}
+                        viewBox="0 0 17 17"
+                        backgroundColor='#fbfbfe'
+                        foregroundColor='#15141a'
+                    >
+                        <rect x="0" y="0" rx="5" ry="5" width="17" height="17" />
+                    </ContentLoader>
+                    : null}
+
+                {props.favicon ? <img src={props.favicon} alt='tab icon' style={{ height: '17px', width: '17px', borderRadius: '5px', alignSelf: "center" }} /> : null}
+
                 <div>
                     {props.tab.title}
                 </div>
-                 
+
             </div>
             <TabOptionsMenu currentTab={props.tab} selectedTabs={props.selectedTabs} setSelectedTabs={props.setSelectedTabs}/>
         </div>
