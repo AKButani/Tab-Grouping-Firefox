@@ -15,9 +15,9 @@
 .group-header{
     display: grid;
     grid-template-columns: 10% 40% repeat(6, 8%);
-   /*  grid-column-gap: 5px;  */
-     justify-content: stretch;
+    justify-content: stretch;
     /* background-color: #42414d; */
+    padding: 0 0 0 2%;
     border-radius: 5px;
     align-items: center;
 }
